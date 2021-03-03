@@ -254,8 +254,8 @@ md"""
 """
 
 # ╔═╡ 75a6fdb4-3aa0-11eb-38d5-f3c1c4ade957
-# opchar, figlabels = (α=0.05,β=0.90), (eff="c",sens="d",spec="e")
-opchar, figlabels = (α=0.05,β=0.80), (eff="f",sens="g",spec="h")
+opchar, figlabels = (α=0.05,β=0.90), (eff="c",sens="d",spec="e")
+# opchar, figlabels = (α=0.05,β=0.80), (eff="f",sens="g",spec="h")
 
 # ╔═╡ f576fd34-3a76-11eb-164f-e545ad1f1ba4
 prange = 10 .^ range(log10(0.1/100),log10(1/100),length=100)

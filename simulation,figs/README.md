@@ -13,3 +13,7 @@ To generate the figures, run `figs.jl` (from the terminal):
 ```bash
 julia --project=@. -E 'include("figs.jl")'
 ```
+This may take roughly 2 minutes on a laptop.
+The expected output figures are:
++ `fig-a.png`
++ `fig-b.png`

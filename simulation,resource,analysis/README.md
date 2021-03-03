@@ -52,3 +52,9 @@ t0, t1, q1pos, q2pos, q3pos, pbestpos = 40, 90, 8.5, 7, 4, missing
 # prevalence ≈ 3.149712%
 # t0, t1, q1pos, q2pos, q3pos, pbestpos = 93, 93, 9, 1.5, 5, missing
 ```
+Each run may take roughly 2 minutes on a laptop.
+The expected output figures for days 40-90 (first set) are:
++ `res,analysis,bestmethods,t0-40,t1-90.png`
++ `res,analysis,detail,t0-40,t1-90.png`
++ `res,analysis,selected,t0-40,t1-90.png`
+

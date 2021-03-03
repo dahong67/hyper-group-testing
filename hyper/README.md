@@ -17,6 +17,8 @@ To generate a design with `n=10` individuals, `m=6` pools and `q=3` splits, run 
 julia --project=@. -E 'include("gendesign.jl"); A = graphdesign(10,6,3);'
 ```
 
+This typically takes a few seconds to run.
+
 The output can be saved to be read in by numpy using
 
 ```bash
@@ -26,5 +28,6 @@ julia --project=@. -E 'include("gendesign.jl"); A = graphdesign(10,6,3); using N
 ## Description of files
 
 + `gendesign.jl`: Julia script (in `Pluto.jl` notebook form) implementing the HYPER constructions
++ `outs.npy`: output from example above
 + `JuliaManifest.toml` & `JuliaProject.toml`: Julia environment files specifying the packages used.
 + `PGField/`: utility package for Beth's combinatorial construction

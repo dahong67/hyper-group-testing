@@ -13,3 +13,38 @@ This repo contains Python and Julia code for HYPER:
 See subdirectories for more information.
 
 *Note:* The Julia scripts are in fact `Pluto.jl` notebooks (https://github.com/fonsp/Pluto.jl).
+
+## System requirements
+
+### Hardware Requirements
+
+All codes can be run on a standard computer and have been tested on a 2019 Macbook Pro with the following specifications:
++ 2.4 GHz Quad-Core Intel Core i5
++ 16 GB RAM
+
+The simulations in `simulation/` can be run in parallel so benefit greatly from running on a cluster;
+PBS scripts are provided in the `simulation/` directory.
+
+### Software Requirements
+
+The code has been run on:
++ MacOS 11.2.1
++ Red Hat Enterprise Linux Server release 7.8
+
+The Python code uses the Anaconda environment described here:
+https://github.com/cleary-lab/covid19-group-tests/blob/master/code/group_test_simulations/README.md
+
+The Julia code was run on Julia 1.5.2, which can be installed from here:
+https://julialang.org/downloads/
+
+The MATLAB code was run using the Python-Matlab connection (https://www.mathworks.com/help/matlab/matlab-engine-for-python.html)
+with MATLAB R2019a.
+
+## Installation
+
+No further installation is required beyond the Anaconda (Python) environment,
+Julia and MATLAB (with the Python-Matlab connection).
+
+Some of the Julia code uses packages installed via its package manager (https://julialang.github.io/Pkg.jl/v1/).
+We give instructions where needed.
+These installations can typically complete within 5-10 minutes.

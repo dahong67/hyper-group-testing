@@ -6,7 +6,7 @@ The modified simulation for P-BEST is implemented
 in `test_on_simulated_population.py`.
 
 Notes:
-+ It requires a working Matlab-Python connection:
++ It requires the Matlab-Python connection:
   https://www.mathworks.com/help/matlab/matlab-engine-for-python.html
 + It uses the P-BEST implementation provided online at https://github.com/NoamShental/PBEST loaded here as the git submodule `PBEST`
 
