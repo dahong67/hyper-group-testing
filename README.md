@@ -48,3 +48,7 @@ Julia and MATLAB (with the Python-Matlab connection).
 Some of the Julia code uses packages installed via its package manager (https://julialang.github.io/Pkg.jl/v1/).
 We give instructions where needed.
 These installations can typically complete within 5-10 minutes.
+
+## Demo / Instructions for use
+
+Varies from directory to directory; see `README.md` files within.
