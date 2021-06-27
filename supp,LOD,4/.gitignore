@@ -1,0 +1,8 @@
+designs/*/Recall_n.*.npy
+designs/*/Vi.*.npy
+designs/*/Vl.*.npy
+designs/*/Vo.*.npy
+ArrHYP.e*
+ArrHYP.o*
+PBESTLOD4.e*
+PBESTLOD4.o*

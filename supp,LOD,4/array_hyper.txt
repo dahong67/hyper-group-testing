@@ -1,0 +1,8 @@
+96	20	2	designs/array,8x12	Design.n-96_m-20_q-2.npy
+96	16	2	designs/hypergraph	Design.n-96_m-16_q-2.npy
+384	40	2	designs/array,16x24	Design.n-384_m-40_q-2.npy
+384	32	2	designs/hypergraph	Design.n-384_m-32_q-2.npy
+384	16	2	designs/hypergraph	Design.n-384_m-16_q-2.npy
+384	12	2	designs/hypergraph	Design.n-384_m-12_q-2.npy
+384	12	1	designs/hypergraph	Design.n-384_m-12_q-1.npy
+384	12	3	designs/hypergraph	Design.n-384_m-12_q-3.npy
