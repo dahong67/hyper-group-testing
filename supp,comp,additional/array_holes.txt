@@ -1,0 +1,2 @@
+384	40	2	designs/array,holes	Design.n-384_m-40_q-2.npy
+96	20	2	designs/array,holes	Design.n-96_m-20_q-2.npy

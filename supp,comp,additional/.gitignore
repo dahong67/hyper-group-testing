@@ -1,0 +1,10 @@
+designs/*/Recall_n.*.npy
+designs/*/Vi.*.npy
+designs/*/Vl.*.npy
+designs/*/Vo.*.npy
+ArrHoles.e*
+ArrHoles.o*
+RandAssign.e*
+RandAssign.o*
+DoublePool.e*
+DoublePool.o*

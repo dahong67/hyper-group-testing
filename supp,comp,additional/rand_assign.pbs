@@ -1,0 +1,15 @@
+#! /bin/bash
+
+#$ -N RandAssign
+#$ -t 1-2
+#$ -l m_mem_free=20G
+
+sleep $((SGE_TASK_ID%60))
+conda activate covid-group-tests
+export OMP_NUM_THREADS=1
+
+export BASE="../simulation"
+read n m q <<< $(sed -n ${SGE_TASK_ID}p rand_assign.txt)
+
+export DIR=designs/rand,assign
+python -u rand_test_on_simulated_population.py --viral-load-matrix $BASE/Simulated_populations/seir_viral_loads_swab.viral_loads.npz --infection-time $BASE/Simulated_populations/used_pars_swab.csv --expected-pos-prob 0.95 --savepath $DIR --n-individuals $n --m-pools $m --q-split $q --start-time 10 --end-time 120 | tee $DIR/log.n-${n}_m-${m}_q-${q}.txt
