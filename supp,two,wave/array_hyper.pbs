@@ -1,0 +1,15 @@
+#! /bin/bash
+
+#$ -N ArrHYP2W
+#$ -t 1-8
+#$ -l m_mem_free=20G
+
+sleep $((SGE_TASK_ID%60))
+conda activate covid-group-tests
+export OMP_NUM_THREADS=1
+
+SIM=../simulation/covid19-group-tests/code/group_test_simulations
+BASE=../simulation
+read n m q DIR DESFILE <<< $(sed -n ${SGE_TASK_ID}p array_hyper.txt)
+
+python -u $SIM/test_on_simulated_population.py --viral-load-matrix Simulated_populations_two_wave/seir_viral_loads_swab_switch_SEIR_new_1.viral_loads.npz --infection-time Simulated_populations_two_wave/used_pars_swab_switch_SEIR_new_1.csv --expected-pos-prob 0.95 --savepath $DIR/ --n-individuals $n --m-pools $m --q-split $q --start-time 0 --end-time 200 --pool-compositions $BASE/$DIR/$DESFILE | tee $DIR/log.n-${n}_m-${m}_q-${q}.txt

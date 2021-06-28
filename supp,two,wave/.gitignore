@@ -1,0 +1,9 @@
+Simulated_populations_two_wave/
+designs/*/Recall_n.*.npy
+designs/*/Vi.*.npy
+designs/*/Vl.*.npy
+designs/*/Vo.*.npy
+ArrHYP2W.e*
+ArrHYP2W.o*
+PBEST2W.e*
+PBEST2W.o*

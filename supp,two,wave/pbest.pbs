@@ -1,0 +1,18 @@
+#! /bin/bash
+
+#$ -N PBEST2W
+#$ -t 10-200
+#$ -l m_mem_free=20G
+
+sleep $((SGE_TASK_ID%60))
+conda activate covid-group-tests
+export OMP_NUM_THREADS=1
+
+export BASE="../simulation"
+export n=384
+export m=48
+export q=6
+export DIR=designs/pbest
+export DESFILE=Design.n-384_m-48_q-6.npy
+
+python -u pbest_test_on_simulated_population.py --viral-load-matrix Simulated_populations_two_wave/seir_viral_loads_swab_switch_SEIR_new_1.viral_loads.npz --infection-time Simulated_populations_two_wave/used_pars_swab_switch_SEIR_new_1.csv --expected-pos-prob 0.95 --savepath pbest,results/ --n-individuals $n --m-pools $m --q-split $q --at-time ${SGE_TASK_ID} --pool-compositions $BASE/$DIR/$DESFILE | tee pbest,results/log.n-${n}_m-${m}_q-${q}.t-${SGE_TASK_ID}.txt
