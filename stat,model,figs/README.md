@@ -1,7 +1,7 @@
-# Theoretical analysis figures
+# Analysis under the statistical model
 
 Julia code in this directory creates figures to accompany
-the analysis under a theoretical model.
+the analysis under a common statistical model.
 
 To make sure the needed Julia packages are installed, run (from this directory):
 

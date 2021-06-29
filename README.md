@@ -9,7 +9,7 @@ This repo contains Python and Julia code for HYPER:
 + `simulation/` contains data files (and code) for simulation under a realistic COVID-19 model
 + `simulation,figs/` generates figures from the outputs in `simulation`
 + `simulation,resource,analysis/` analyzes the effectiveness of various methods under resource constraints (using the outputs from `simulation`)
-+ `theoretical,figs/` generates figures to accompany analysis under a theoretical model
++ `stat,model,figs/` generates the figures to accompany the analysis under a common statistical model
 See subdirectories for more information.
 
 *Note:* The Julia scripts are in fact `Pluto.jl` notebooks (https://github.com/fonsp/Pluto.jl).
