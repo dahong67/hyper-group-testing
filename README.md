@@ -10,6 +10,8 @@ This repo contains Python and Julia code for HYPER:
 + `simulation,figs/` generates figures from the outputs in `simulation`
 + `simulation,resource,analysis/` analyzes the effectiveness of various methods under resource constraints (using the outputs from `simulation`)
 + `stat,model,figs/` generates the figures to accompany the analysis under a common statistical model
++ `supp,*/` contain code for associated supplementary figures
+
 See subdirectories for more information.
 
 *Note:* The Julia scripts are in fact `Pluto.jl` notebooks (https://github.com/fonsp/Pluto.jl).
