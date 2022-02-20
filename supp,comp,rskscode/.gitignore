@@ -1,0 +1,6 @@
+designs/*/Recall_n.*.npy
+designs/*/Vi.*.npy
+designs/*/Vl.*.npy
+designs/*/Vo.*.npy
+RSKSCode.e*
+RSKSCode.o*

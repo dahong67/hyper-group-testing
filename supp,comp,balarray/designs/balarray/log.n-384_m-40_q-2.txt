@@ -1,0 +1,127 @@
+viral_load_matrix	../sim,kinetics/Simulated_populations/seir_viral_loads_swab.viral_loads.npz
+infection_time	../sim,kinetics/Simulated_populations/used_pars_swab.csv
+savepath	designs/balsq,array/
+n_individuals	384
+m_pools	40
+q_split	2
+start_time	10
+end_time	120
+fp_rate	0.01
+LOD	100
+pool_compositions	designs/balsq,array/Design.n-384_m-40_q-2.npy
+expected_pos_prob	0.95
+error_tol	0
+parsed infection times for 12500000 individuals
+loaded viral load matrix with shape (12500000, 357) and 213965760 entries
+loading pools from: designs/balsq,array/Design.n-384_m-40_q-2.npy
+Time: 10; Case frequency: 0.00002; Efficiency: 9.59; Sensitivity: 0.8866; Fraction >LOD: 0.9282
+Time: 11; Case frequency: 0.00002; Efficiency: 9.59; Sensitivity: 0.8605; Fraction >LOD: 0.9198
+Time: 12; Case frequency: 0.00002; Efficiency: 9.59; Sensitivity: 0.9264; Fraction >LOD: 0.9615
+Time: 13; Case frequency: 0.00002; Efficiency: 9.59; Sensitivity: 0.8880; Fraction >LOD: 0.9561
+Time: 14; Case frequency: 0.00003; Efficiency: 9.59; Sensitivity: 0.8666; Fraction >LOD: 0.9518
+Time: 15; Case frequency: 0.00003; Efficiency: 9.59; Sensitivity: 0.8575; Fraction >LOD: 0.9468
+Time: 16; Case frequency: 0.00003; Efficiency: 9.59; Sensitivity: 0.8081; Fraction >LOD: 0.9112
+Time: 17; Case frequency: 0.00004; Efficiency: 9.59; Sensitivity: 0.7821; Fraction >LOD: 0.9210
+Time: 18; Case frequency: 0.00004; Efficiency: 9.59; Sensitivity: 0.7569; Fraction >LOD: 0.8934
+Time: 19; Case frequency: 0.00005; Efficiency: 9.59; Sensitivity: 0.7377; Fraction >LOD: 0.8730
+Time: 20; Case frequency: 0.00006; Efficiency: 9.59; Sensitivity: 0.7161; Fraction >LOD: 0.8755
+Time: 21; Case frequency: 0.00006; Efficiency: 9.58; Sensitivity: 0.7297; Fraction >LOD: 0.8818
+Time: 22; Case frequency: 0.00007; Efficiency: 9.58; Sensitivity: 0.7425; Fraction >LOD: 0.8763
+Time: 23; Case frequency: 0.00007; Efficiency: 9.58; Sensitivity: 0.7501; Fraction >LOD: 0.8629
+Time: 24; Case frequency: 0.00008; Efficiency: 9.58; Sensitivity: 0.7341; Fraction >LOD: 0.8516
+Time: 25; Case frequency: 0.00009; Efficiency: 9.58; Sensitivity: 0.7445; Fraction >LOD: 0.8449
+Time: 26; Case frequency: 0.00010; Efficiency: 9.58; Sensitivity: 0.7261; Fraction >LOD: 0.8458
+Time: 27; Case frequency: 0.00011; Efficiency: 9.58; Sensitivity: 0.7353; Fraction >LOD: 0.8567
+Time: 28; Case frequency: 0.00012; Efficiency: 9.58; Sensitivity: 0.7373; Fraction >LOD: 0.8543
+Time: 29; Case frequency: 0.00013; Efficiency: 9.58; Sensitivity: 0.7493; Fraction >LOD: 0.8507
+Time: 30; Case frequency: 0.00014; Efficiency: 9.58; Sensitivity: 0.7193; Fraction >LOD: 0.8455
+Time: 31; Case frequency: 0.00015; Efficiency: 9.58; Sensitivity: 0.7217; Fraction >LOD: 0.8516
+Time: 32; Case frequency: 0.00017; Efficiency: 9.58; Sensitivity: 0.7125; Fraction >LOD: 0.8485
+Time: 33; Case frequency: 0.00019; Efficiency: 9.57; Sensitivity: 0.7037; Fraction >LOD: 0.8576
+Time: 34; Case frequency: 0.00020; Efficiency: 9.57; Sensitivity: 0.7169; Fraction >LOD: 0.8465
+Time: 35; Case frequency: 0.00022; Efficiency: 9.57; Sensitivity: 0.7097; Fraction >LOD: 0.8403
+Time: 36; Case frequency: 0.00024; Efficiency: 9.57; Sensitivity: 0.7357; Fraction >LOD: 0.8327
+Time: 37; Case frequency: 0.00027; Efficiency: 9.56; Sensitivity: 0.7341; Fraction >LOD: 0.8417
+Time: 38; Case frequency: 0.00029; Efficiency: 9.56; Sensitivity: 0.7325; Fraction >LOD: 0.8474
+Time: 39; Case frequency: 0.00031; Efficiency: 9.56; Sensitivity: 0.7321; Fraction >LOD: 0.8504
+Time: 40; Case frequency: 0.00034; Efficiency: 9.56; Sensitivity: 0.7397; Fraction >LOD: 0.8526
+Time: 41; Case frequency: 0.00037; Efficiency: 9.56; Sensitivity: 0.7349; Fraction >LOD: 0.8528
+Time: 42; Case frequency: 0.00040; Efficiency: 9.55; Sensitivity: 0.7189; Fraction >LOD: 0.8468
+Time: 43; Case frequency: 0.00044; Efficiency: 9.55; Sensitivity: 0.7305; Fraction >LOD: 0.8554
+Time: 44; Case frequency: 0.00048; Efficiency: 9.54; Sensitivity: 0.7229; Fraction >LOD: 0.8552
+Time: 45; Case frequency: 0.00052; Efficiency: 9.54; Sensitivity: 0.7301; Fraction >LOD: 0.8575
+Time: 46; Case frequency: 0.00057; Efficiency: 9.53; Sensitivity: 0.7329; Fraction >LOD: 0.8520
+Time: 47; Case frequency: 0.00062; Efficiency: 9.53; Sensitivity: 0.7261; Fraction >LOD: 0.8570
+Time: 48; Case frequency: 0.00068; Efficiency: 9.52; Sensitivity: 0.7209; Fraction >LOD: 0.8500
+Time: 49; Case frequency: 0.00074; Efficiency: 9.52; Sensitivity: 0.7285; Fraction >LOD: 0.8493
+Time: 50; Case frequency: 0.00081; Efficiency: 9.51; Sensitivity: 0.6993; Fraction >LOD: 0.8463
+Time: 51; Case frequency: 0.00088; Efficiency: 9.50; Sensitivity: 0.7101; Fraction >LOD: 0.8446
+Time: 52; Case frequency: 0.00095; Efficiency: 9.49; Sensitivity: 0.7153; Fraction >LOD: 0.8443
+Time: 53; Case frequency: 0.00104; Efficiency: 9.48; Sensitivity: 0.7118; Fraction >LOD: 0.8433
+Time: 54; Case frequency: 0.00113; Efficiency: 9.48; Sensitivity: 0.7117; Fraction >LOD: 0.8438
+Time: 55; Case frequency: 0.00123; Efficiency: 9.46; Sensitivity: 0.7169; Fraction >LOD: 0.8439
+Time: 56; Case frequency: 0.00134; Efficiency: 9.45; Sensitivity: 0.7317; Fraction >LOD: 0.8468
+Time: 57; Case frequency: 0.00146; Efficiency: 9.43; Sensitivity: 0.7313; Fraction >LOD: 0.8471
+Time: 58; Case frequency: 0.00159; Efficiency: 9.41; Sensitivity: 0.7257; Fraction >LOD: 0.8459
+Time: 59; Case frequency: 0.00174; Efficiency: 9.40; Sensitivity: 0.7253; Fraction >LOD: 0.8465
+Time: 60; Case frequency: 0.00189; Efficiency: 9.37; Sensitivity: 0.7273; Fraction >LOD: 0.8511
+Time: 61; Case frequency: 0.00207; Efficiency: 9.35; Sensitivity: 0.7117; Fraction >LOD: 0.8483
+Time: 62; Case frequency: 0.00225; Efficiency: 9.32; Sensitivity: 0.7481; Fraction >LOD: 0.8489
+Time: 63; Case frequency: 0.00245; Efficiency: 9.29; Sensitivity: 0.7325; Fraction >LOD: 0.8505
+Time: 64; Case frequency: 0.00267; Efficiency: 9.26; Sensitivity: 0.7225; Fraction >LOD: 0.8495
+Time: 65; Case frequency: 0.00291; Efficiency: 9.22; Sensitivity: 0.7249; Fraction >LOD: 0.8473
+Time: 66; Case frequency: 0.00318; Efficiency: 9.17; Sensitivity: 0.7221; Fraction >LOD: 0.8457
+Time: 67; Case frequency: 0.00346; Efficiency: 9.12; Sensitivity: 0.7314; Fraction >LOD: 0.8466
+Time: 68; Case frequency: 0.00377; Efficiency: 9.09; Sensitivity: 0.7242; Fraction >LOD: 0.8464
+Time: 69; Case frequency: 0.00411; Efficiency: 9.02; Sensitivity: 0.7214; Fraction >LOD: 0.8482
+Time: 70; Case frequency: 0.00447; Efficiency: 8.88; Sensitivity: 0.7397; Fraction >LOD: 0.8488
+Time: 71; Case frequency: 0.00486; Efficiency: 8.87; Sensitivity: 0.7186; Fraction >LOD: 0.8470
+Time: 72; Case frequency: 0.00530; Efficiency: 8.74; Sensitivity: 0.7150; Fraction >LOD: 0.8451
+Time: 73; Case frequency: 0.00577; Efficiency: 8.74; Sensitivity: 0.7161; Fraction >LOD: 0.8455
+Time: 74; Case frequency: 0.00630; Efficiency: 8.63; Sensitivity: 0.7143; Fraction >LOD: 0.8459
+Time: 75; Case frequency: 0.00687; Efficiency: 8.44; Sensitivity: 0.7263; Fraction >LOD: 0.8460
+Time: 76; Case frequency: 0.00748; Efficiency: 8.30; Sensitivity: 0.7210; Fraction >LOD: 0.8479
+Time: 77; Case frequency: 0.00814; Efficiency: 8.13; Sensitivity: 0.7341; Fraction >LOD: 0.8468
+Time: 78; Case frequency: 0.00889; Efficiency: 7.97; Sensitivity: 0.7336; Fraction >LOD: 0.8458
+Time: 79; Case frequency: 0.00969; Efficiency: 7.77; Sensitivity: 0.7351; Fraction >LOD: 0.8470
+Time: 80; Case frequency: 0.01056; Efficiency: 7.71; Sensitivity: 0.7288; Fraction >LOD: 0.8484
+Time: 81; Case frequency: 0.01149; Efficiency: 7.38; Sensitivity: 0.7297; Fraction >LOD: 0.8484
+Time: 82; Case frequency: 0.01250; Efficiency: 7.13; Sensitivity: 0.7261; Fraction >LOD: 0.8475
+Time: 83; Case frequency: 0.01362; Efficiency: 6.95; Sensitivity: 0.7321; Fraction >LOD: 0.8466
+Time: 84; Case frequency: 0.01484; Efficiency: 6.63; Sensitivity: 0.7402; Fraction >LOD: 0.8464
+Time: 85; Case frequency: 0.01615; Efficiency: 6.43; Sensitivity: 0.7256; Fraction >LOD: 0.8468
+Time: 86; Case frequency: 0.01759; Efficiency: 6.12; Sensitivity: 0.7275; Fraction >LOD: 0.8471
+Time: 87; Case frequency: 0.01912; Efficiency: 5.88; Sensitivity: 0.7270; Fraction >LOD: 0.8480
+Time: 88; Case frequency: 0.02080; Efficiency: 5.51; Sensitivity: 0.7339; Fraction >LOD: 0.8485
+Time: 89; Case frequency: 0.02262; Efficiency: 5.19; Sensitivity: 0.7345; Fraction >LOD: 0.8483
+Time: 90; Case frequency: 0.02459; Efficiency: 4.95; Sensitivity: 0.7403; Fraction >LOD: 0.8475
+Time: 91; Case frequency: 0.02670; Efficiency: 4.58; Sensitivity: 0.7455; Fraction >LOD: 0.8474
+Time: 92; Case frequency: 0.02900; Efficiency: 4.37; Sensitivity: 0.7355; Fraction >LOD: 0.8465
+Time: 93; Case frequency: 0.03150; Efficiency: 4.05; Sensitivity: 0.7259; Fraction >LOD: 0.8464
+Time: 94; Case frequency: 0.03418; Efficiency: 3.84; Sensitivity: 0.7387; Fraction >LOD: 0.8463
+Time: 95; Case frequency: 0.03707; Efficiency: 3.57; Sensitivity: 0.7357; Fraction >LOD: 0.8464
+Time: 96; Case frequency: 0.04024; Efficiency: 3.27; Sensitivity: 0.7419; Fraction >LOD: 0.8455
+Time: 97; Case frequency: 0.04361; Efficiency: 3.06; Sensitivity: 0.7387; Fraction >LOD: 0.8452
+Time: 98; Case frequency: 0.04721; Efficiency: 2.87; Sensitivity: 0.7447; Fraction >LOD: 0.8452
+Time: 99; Case frequency: 0.05113; Efficiency: 2.63; Sensitivity: 0.7477; Fraction >LOD: 0.8447
+Time: 100; Case frequency: 0.05529; Efficiency: 2.51; Sensitivity: 0.7434; Fraction >LOD: 0.8443
+Time: 101; Case frequency: 0.05982; Efficiency: 2.23; Sensitivity: 0.7609; Fraction >LOD: 0.8441
+Time: 102; Case frequency: 0.06467; Efficiency: 2.10; Sensitivity: 0.7656; Fraction >LOD: 0.8427
+Time: 103; Case frequency: 0.06984; Efficiency: 1.93; Sensitivity: 0.7744; Fraction >LOD: 0.8428
+Time: 104; Case frequency: 0.07537; Efficiency: 1.83; Sensitivity: 0.7714; Fraction >LOD: 0.8423
+Time: 105; Case frequency: 0.08126; Efficiency: 1.72; Sensitivity: 0.7767; Fraction >LOD: 0.8420
+Time: 106; Case frequency: 0.08753; Efficiency: 1.61; Sensitivity: 0.7729; Fraction >LOD: 0.8417
+Time: 107; Case frequency: 0.09415; Efficiency: 1.53; Sensitivity: 0.7783; Fraction >LOD: 0.8409
+Time: 108; Case frequency: 0.10114; Efficiency: 1.43; Sensitivity: 0.7895; Fraction >LOD: 0.8404
+Time: 109; Case frequency: 0.10856; Efficiency: 1.35; Sensitivity: 0.7958; Fraction >LOD: 0.8400
+Time: 110; Case frequency: 0.11643; Efficiency: 1.31; Sensitivity: 0.7940; Fraction >LOD: 0.8389
+Time: 111; Case frequency: 0.12465; Efficiency: 1.24; Sensitivity: 0.7984; Fraction >LOD: 0.8382
+Time: 112; Case frequency: 0.13331; Efficiency: 1.21; Sensitivity: 0.7991; Fraction >LOD: 0.8374
+Time: 113; Case frequency: 0.14233; Efficiency: 1.16; Sensitivity: 0.8060; Fraction >LOD: 0.8367
+Time: 114; Case frequency: 0.15167; Efficiency: 1.12; Sensitivity: 0.8063; Fraction >LOD: 0.8354
+Time: 115; Case frequency: 0.16141; Efficiency: 1.08; Sensitivity: 0.8094; Fraction >LOD: 0.8335
+Time: 116; Case frequency: 0.17146; Efficiency: 1.06; Sensitivity: 0.8148; Fraction >LOD: 0.8321
+Time: 117; Case frequency: 0.18183; Efficiency: 1.03; Sensitivity: 0.8124; Fraction >LOD: 0.8308
+Time: 118; Case frequency: 0.19237; Efficiency: 1.02; Sensitivity: 0.8091; Fraction >LOD: 0.8295
+Time: 119; Case frequency: 0.20307; Efficiency: 1.00; Sensitivity: 0.8109; Fraction >LOD: 0.8278
+Time: 120; Case frequency: 0.21401; Efficiency: 0.99; Sensitivity: 0.8140; Fraction >LOD: 0.8261
