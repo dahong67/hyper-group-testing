@@ -1,3 +1,5 @@
 96	16	2	designs/hypergraph	../simulation/designs/hypergraph/Design.n-96_m-16_q-2.npy	1	100000	1
 96	16	2	designs/lexicographic	designs/lexicographic/Design.n-96_m-16_q-2.npy	1	100000	1
 96	16	2	designs/consecutive	designs/consecutive/Design.n-96_m-16_q-2.npy	1	100000	1
+96	16	2	designs/rskscode,f2	../supp,comp,rskscode/designs/rskscode,f2/Design.n-96_m-16_q-2.npy	1	100000	1
+96	16	2	designs/balarray	../supp,comp,balarray/designs/balarray/Design.n-96_m-16_q-2.npy	1	100000	1
