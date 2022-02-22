@@ -144,7 +144,7 @@ with_theme(; linewidth=3, markersize=3,
 		linestyle=get(Dict(1=>:dot,2=>:dash,3=>:solid),q,:solid),
 	)
 	
-	ax_eff = Axis(fig[1,1]; title="n=96 individuals",
+	ax_eff = Axis(fig[1,1]; title="n=384 individuals",
 		limits=(nothing,(0,24*1.14)), yticks=[1,0,384/16,384/48,384/32],
 		yticklabelalign=[(:right,:bottom); fill((:right,:center),4)])
 	vspan!(ax_eff, SHADELIMS...; color=SHADECOLOR)
