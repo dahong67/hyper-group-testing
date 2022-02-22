@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #$ -N ArrHYP
-#$ -t 1-8
+#$ -t 1-10
 #$ -l m_mem_free=20G
 
 sleep $((SGE_TASK_ID%60))
