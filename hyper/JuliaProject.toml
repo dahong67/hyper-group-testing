@@ -1,6 +1,4 @@
 [deps]
-IterTools = "c8e1da08-722c-5040-9ed9-7db0dc04731e"
+HyperGen = "538ba80a-1540-477e-b164-45f4c3e2e6e1"
 NPZ = "15e1cf62-19b3-5cfa-8e77-841668bca605"
-PGField = "9b09e30e-0c6f-4b1f-a2ae-dcf28a3a8e81"
 Pluto = "c3e4b0f8-55cb-11ea-2926-15256bba5781"
-Primes = "27ebfcd6-29c5-5fa9-bf4b-fb8fc14df3ae"

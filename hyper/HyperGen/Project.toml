@@ -1,0 +1,14 @@
+name = "HyperGen"
+uuid = "538ba80a-1540-477e-b164-45f4c3e2e6e1"
+authors = ["David Hong <dahong67@wharton.upenn.edu>"]
+version = "0.1.0"
+
+[deps]
+IterTools = "c8e1da08-722c-5040-9ed9-7db0dc04731e"
+Primes = "27ebfcd6-29c5-5fa9-bf4b-fb8fc14df3ae"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+
+[compat]
+IterTools = "1.3.0"
+Primes = "0.5.0"
+julia = "1.6"
