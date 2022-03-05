@@ -25,7 +25,7 @@ md"""
 """
 
 # ╔═╡ 66dd9e7e-f948-4457-8bd6-45345be6abb5
-DESDIR = "../../../hyper-group-testing/supp,LOD,4/designs/"
+DESDIR = relpath(joinpath(@__DIR__,"designs"))
 
 # ╔═╡ 6b39ad12-5378-47dc-9a12-e1d5838b0dee
 DAYS = IdentityRange(20:110)

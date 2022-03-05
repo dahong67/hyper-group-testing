@@ -27,10 +27,10 @@ md"""
 """
 
 # ╔═╡ a61d6b1b-a795-4883-b0be-55184cc79e58
-DESDIR = "../../../hyper-group-testing/simulation/designs/"
+DESDIR = relpath(joinpath(@__DIR__,"..","simulation","designs"))
 
 # ╔═╡ 33306182-610f-4409-8b28-56d0af833a71
-ADDDIR = "../../../hyper-group-testing/supp,comp,rskscode/designs/"
+ADDDIR = relpath(joinpath(@__DIR__,"designs"))
 
 # ╔═╡ fd643c2c-08e5-11eb-0d25-014798a505d1
 md"""

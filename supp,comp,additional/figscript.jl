@@ -25,10 +25,10 @@ md"""
 """
 
 # ╔═╡ 66dd9e7e-f948-4457-8bd6-45345be6abb5
-DESDIR = "../../../hyper-group-testing/simulation/designs/"
+DESDIR = relpath(joinpath(@__DIR__,"..","simulation","designs"))
 
 # ╔═╡ 1c2f2782-f8cf-4f73-9881-6131b5e29c96
-ADDDIR = "../../../hyper-group-testing/supp,comp,additional/designs/"
+ADDDIR = relpath(joinpath(@__DIR__,"designs"))
 
 # ╔═╡ 6b39ad12-5378-47dc-9a12-e1d5838b0dee
 DAYS = IdentityRange(20:110)

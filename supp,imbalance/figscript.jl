@@ -21,7 +21,7 @@ md"""
 """
 
 # ╔═╡ 66dd9e7e-f948-4457-8bd6-45345be6abb5
-DESDIR = "../../../hyper-group-testing/supp,imbalance/designs/"
+DESDIR = relpath(joinpath(@__DIR__,"designs"))
 
 # ╔═╡ dcfbfb7b-3d7b-42f5-9635-cbdc92453889
 DES = (;n=96,m=16,q=2)
