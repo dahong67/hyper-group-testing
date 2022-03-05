@@ -8,7 +8,7 @@ using InteractiveUtils
 begin
 	import Pkg; Pkg.activate(@__DIR__)
 	using CacheVariables, Distributions, HyperGen, ProgressLogging, StableRNGs
-	using CairoMakie, LaTeXStrings
+	using CairoMakie
 end
 
 # ╔═╡ f7c7716c-3593-11eb-00c3-677a7dbc5fec
@@ -66,7 +66,7 @@ md"""
 
 # ╔═╡ 62c3456a-75f0-4116-8149-3622bf81d6a8
 eff(cts::SimCounts) =
-	cts.numtests/(cts.falseneg+cts.truepos+cts.trueneg+cts.falsepos)
+	(cts.falseneg+cts.truepos+cts.trueneg+cts.falsepos)/cts.numtests
 
 # ╔═╡ 64bd6c15-2c35-4b87-b145-af28173b0c05
 sens(cts::SimCounts) = cts.truepos/(cts.truepos+cts.falseneg)
@@ -89,14 +89,17 @@ Expected number of tests (bound for $q>2$):
 """
 
 # ╔═╡ 1db68090-3594-11eb-3c00-1f948011570b
-function effbound(p,n,m,q;α=0,β=1)
+function numtestbound(p,n,m,q;α=0,β=1)
 	k = n*q/m
 	r = 1-p
 	u = binomial(m-2,q-2)*ceil(n/binomial(m,q))
 	p1 = 1 - β + (β-α)*r^k
 	p2 = p1^2 + (β-α)^2*r^(2*k-u)*(1-r^u)
-	return (m + n*(1 - q*p1 + binomial(q,2)*p2))/n
+	return m + n*(1 - q*p1 + binomial(q,2)*p2)
 end
+
+# ╔═╡ fccdb23e-61fd-4336-9f6c-06c750f0acbc
+effbound(p,n,m,q;α=0,β=1) = n/numtestbound(p,n,m,q;α,β)
 
 # ╔═╡ 530c81aa-7bca-11eb-1769-a7fe4d74bb1b
 md"""
@@ -120,11 +123,13 @@ Numerical (non-asymptotic) optimization of bound:
 """
 
 # ╔═╡ 2101c74c-3595-11eb-059c-25b8a1a76ff5
-mopt(p,n,q;α=0,β=1,maxm=n) =
-	argmin([effbound(p,n,m,q;α=α,β=β) for m in 1:maxm] .|> x->isnan(x) ? Inf : x)
+mopt(p,n,q;α=0,β=1,maxm=n) = argmin(1:maxm) do m
+	bound = numtestbound(p,n,m,q;α,β)
+	return !isnan(bound) ? bound : Inf
+end
 
 # ╔═╡ 5c9a1260-3595-11eb-0e60-3fe0c174ca5a
-effopt(p,n,q;α=0,β=1,maxm=n) = effbound(p,n,mopt(p,n,q;α=α,β=β,maxm=maxm),q;α=α,β=β)
+effopt(p,n,q;α=0,β=1,maxm=n) = effbound(p,n,mopt(p,n,q;α,β,maxm),q;α,β)
 
 # ╔═╡ c3bb886c-397f-4189-8ac3-6af46bfd9261
 md"""
@@ -161,64 +166,84 @@ md"""
 ## Figures
 """
 
+# ╔═╡ 93d64dbb-cc6f-4e9a-a84d-bf173b21ed6b
+begin
+	mm_to_units(mm) = floor(Int,mm/25.4*72/0.75)
+	mm_to_units(mm1,mm2,mmrest...) = mm_to_units.((mm1,mm2,mmrest...))
+end
+
+# ╔═╡ 23acc613-bcd5-4f3f-97b1-b56c573271e7
+THEME = Theme(;
+	font = "Arial", fontsize = 7,
+	linewidth = 1, markersize = 4,
+	Axis    = (;xticksize = 2.5, yticksize = 2.5),
+	Text    = (;textsize = 7),
+	BarPlot = (;label_size = 7, label_offset = 1, strokewidth = 0.5, gap = 0),
+	Hist    = (;strokewidth = 0),
+	BoxPlot = (;markersize = 3, whiskerwidth = 0.5),
+	Legend  = (;framevisible = false, titlefont = "Arial Bold", patchsize = (8,8)),
+	Lines   = (;linewidth = 2),
+	Scatter = (;markersize = 2),
+	Arrows  = (;linewidth = 1.5, arrowsize = 8),
+)
+
 # ╔═╡ 18514663-7393-4ec5-9010-48d293ea91f5
-with_theme(; linewidth=4, markersize=6,
-	Axis=(;xtickalign=1, ytickalign=1), Legend=(;framevisible=false),
-) do
-	fig = Figure(; resolution=(1200,1200))
+with_theme(THEME; Legend=(;padding=(0,0,0,0))) do
+	fig = Figure(; resolution=mm_to_units(180,180))
 
 	## Simulation figures
 	PTICKS = [0.001, 0.002, 0.003, 0.005, 0.01]
 	EFFTICKS, EFFLIMS = 5:5:25, (3.8,27)
 	SENSTICKS, SENSLIMS = 0.5:0.1:0.9, (0.43,0.9)
 	SPECTICKS, SPECLIMS = 0.99:0.002:1, (0.989,1)
-	LSIZE = 20f0 # size for LaTeXStrings
 	PALETTE = Makie.wong_colors(0.6)
 	
 	resultsitr = zip(Iterators.partition('a':'z',3),CONFIGS,results)
 	for (row,(lbl,(α,β),res)) in enumerate(resultsitr)
 		# Efficiency
 		ax_eff = Axis(fig[row,1]; limits=(extrema(PTICKS), EFFLIMS),
-			xlabel=LaTeXString("Prevalence"), xlabelsize=LSIZE,
+			xlabel="Prevalence",
 			xscale=log10, xticks=PTICKS, xtickformat=x->string.(x.*100,'%'),
-			ylabel=L"Efficiency gain: $n/\mathbf{\mathrm{E}}T$", ylabelsize=LSIZE,
+			ylabel="Efficiency (relative to individual testing)",
 			yscale=log10, yticks=EFFTICKS,
-			title=L"\beta = %$β,\;\; 1-\alpha = %$(1-α)", titlesize=LSIZE)
+			title="β=$β, 1-α=$(1-α)")
 		for (desres,(n,m,q),color) in zip(res,DESIGNS,PALETTE)
-			scatter!(ax_eff, PRANGE, inv.(eff.(desres)); color)
-			lines!(ax_eff, PRANGE, p->inv(effbound(p,n,m,q;α,β)); color,
-				label=L"m=%$m")
+			scatter!(ax_eff, PRANGE, eff.(desres); color)
+			lines!(ax_eff, PRANGE, p->effbound(p,n,m,q;α,β); color, label="m=$m")
 		end
 		axislegend(ax_eff)
-		Label(fig[row,1,TopLeft()], string(lbl[1]); textsize=28f0, halign=:left)
+		Label(fig[row,1,TopLeft()], string(lbl[1]);
+			halign=:left, valign=:top, font="Arial Bold")
 
 		# Sensitivity
 		ax_sens = Axis(fig[row,2]; limits=(extrema(PTICKS), SENSLIMS),
-			xlabel=LaTeXString("Prevalence"), xlabelsize=LSIZE,
+			xlabel="Prevalence",
 			xscale=log10, xticks=PTICKS, xtickformat=x->string.(x.*100,'%'),
-			ylabel=LaTeXString("Sensitivity"), ylabelsize=LSIZE,
+			ylabel="Sensitivity",
 			yticks=SENSTICKS, ytickformat=y->string.(convert.(Int,y.*100),'%'),
-			title=L"\beta = %$β,\;\; 1-\alpha = %$(1-α)", titlesize=LSIZE)
+			title="β=$β, 1-α=$(1-α)")
 		for (desres,(n,m,q),color) in zip(res,DESIGNS,PALETTE)
 			scatter!(ax_sens, PRANGE, sens.(desres); color)
-			lines!(ax_sens, PRANGE, p->sens(p,n,m,q;α,β); color, label=L"m=%$m")
+			lines!(ax_sens, PRANGE, p->sens(p,n,m,q;α,β); color, label="m=$m")
 		end
-		axislegend(ax_sens; orientation=:horizontal)
-		Label(fig[row,2,TopLeft()], string(lbl[2]); textsize=28f0, halign=:left)
+		axislegend(ax_sens; position=:ct, orientation=:horizontal)
+		Label(fig[row,2,TopLeft()], string(lbl[2]);
+			halign=:left, valign=:top, font="Arial Bold")
 
 		# Specificity
 		ax_spec = Axis(fig[row,3]; limits=(extrema(PTICKS), SPECLIMS),
-			xlabel=LaTeXString("Prevalence"), xlabelsize=LSIZE,
+			xlabel="Prevalence",
 			xscale=log10, xticks=PTICKS, xtickformat=x->string.(x.*100,'%'),
-			ylabel=LaTeXString("Specificity"), ylabelsize=LSIZE,
+			ylabel="Specificity",
 			yticks=SPECTICKS, ytickformat=y->string.(y.*100,'%'),
-			title=L"\beta = %$β,\;\; 1-\alpha = %$(1-α)", titlesize=LSIZE)
+			title="β=$β, 1-α=$(1-α)")
 		for (desres,(n,m,q),color) in zip(res,DESIGNS,PALETTE)
 			scatter!(ax_spec, PRANGE, spec.(desres); color)
-			lines!(ax_spec, PRANGE, p->spec(p,n,m,q;α,β); color, label=L"m=%$m")
+			lines!(ax_spec, PRANGE, p->spec(p,n,m,q;α,β); color, label="m=$m")
 		end
 		axislegend(ax_spec; position=:lb)
-		Label(fig[row,3,TopLeft()], string(lbl[3]); textsize=28f0, halign=:left)
+		Label(fig[row,3,TopLeft()], string(lbl[3]);
+			halign=:left, valign=:top, font="Arial Bold")
 	end
 
 	## Optimization
@@ -226,35 +251,39 @@ with_theme(; linewidth=4, markersize=6,
 	PRANGE_FINE = 10 .^ range(log10.(extrema(PRANGE))...,length=1000)
 	
 	ax_mopt = Axis(row[1,1]; limits=(extrema(PTICKS), (0.019,0.095)),
-		xlabel=LaTeXString("Prevalence"), xlabelsize=LSIZE,
+		xlabel="Prevalence",
 		xscale=log10, xticks=PTICKS, xtickformat=x->string.(x.*100,'%'),
-		ylabel=L"m/n", ylabelsize=LSIZE, yticks=0.02:0.01:0.09)
+		ylabel="Optimal choice of pools per individual", yticks=0.02:0.01:0.09)
 	for n in [96,384,1536,6144]
-		lines!(ax_mopt, PRANGE_FINE, p->mopt(p,n,2)/n; label=L"n = %$n")
+		lines!(ax_mopt, PRANGE_FINE, p->mopt(p,n,2)/n; label="n=$n")
 	end
-	lines!(ax_mopt, PRANGE_FINE, p->2*p^(2/3)-p; label=L"2p^{2/3}-p",
+	lines!(ax_mopt, PRANGE_FINE, p->2*p^(2/3)-p; label="2p²ᐟ³-p",
 		color=:black, linestyle=:dash)
 	axislegend(ax_mopt; position=:lt)
 	Label(row[1,1,TopLeft()], string(('a':'z')[length(results)*3+1]);
-		textsize=28f0, halign=:left)
+		halign=:left, valign=:top, font="Arial Bold")
 
 	EFFOPTTICKS = inv.(3*PTICKS.^(2/3))
 	ax_effopt = Axis(row[1,2]; limits=(extrema(PTICKS), nothing),
-		xlabel=LaTeXString("Prevalence"), xlabelsize=LSIZE,
+		xlabel="Prevalence",
 		xscale=log10, xticks=PTICKS, xtickformat=x->string.(x.*100,'%'),
-		ylabel=L"Efficiency gain: $n/\mathbf{\mathrm{E}}T$", ylabelsize=LSIZE,
+		ylabel="Efficiency (relative to individual testing)",
 		yscale=log10, yticks=EFFOPTTICKS,
 		ytickformat=y->string.(round.(y;digits=1)))
 	for n in [96,384,1536,6144]
-		lines!(ax_effopt, PRANGE_FINE, p->inv(effopt(p,n,2)); label=L"n = %$n")
+		lines!(ax_effopt, PRANGE_FINE, p->effopt(p,n,2); label="n=$n")
 	end
-	lines!(ax_effopt, PRANGE_FINE, p->inv(3*p^(2/3)); label=L"p^{-2/3}/3",
+	lines!(ax_effopt, PRANGE_FINE, p->inv(3*p^(2/3)); label="p⁻²ᐟ³/3",
 		color=:black, linestyle=:dash)
 	axislegend(ax_effopt)
 	Label(row[1,2,TopLeft()], string(('a':'z')[length(results)*3+2]);
-		textsize=28f0, halign=:left)
+		halign=:left, valign=:top, font="Arial Bold")
 
-	save("fig-s1.png", fig)
+	rowgap!(fig.layout, 16)
+	colgap!(fig.layout, 16)
+	colgap!(row, 16)
+	save("fig-s1.png", fig; px_per_unit=2)
+	save("fig-s1.pdf", fig)
 	fig
 end
 
@@ -273,6 +302,7 @@ end
 # ╠═9e393e90-35f0-11eb-25bc-af3fc684f85f
 # ╟─fd32d722-3595-11eb-27ea-7d153568cb6a
 # ╠═1db68090-3594-11eb-3c00-1f948011570b
+# ╠═fccdb23e-61fd-4336-9f6c-06c750f0acbc
 # ╟─530c81aa-7bca-11eb-1769-a7fe4d74bb1b
 # ╠═133cd066-3a9d-11eb-3fa7-19b51f9943ff
 # ╠═1d15d678-3a9d-11eb-06ef-8fd57eba76be
@@ -286,4 +316,6 @@ end
 # ╟─e4d82079-b5ba-4f4a-b3e9-d36b98829e70
 # ╠═b1d7979d-cfe0-4399-b07e-b02f070f2101
 # ╟─d2623c58-4c6e-4617-88e6-89204155c885
+# ╟─93d64dbb-cc6f-4e9a-a84d-bf173b21ed6b
+# ╟─23acc613-bcd5-4f3f-97b1-b56c573271e7
 # ╟─18514663-7393-4ec5-9010-48d293ea91f5

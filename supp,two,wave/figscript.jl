@@ -151,16 +151,34 @@ hyperstr(n,m,q) = "HYPER (m=$m, q=$q)"
 
 # ╔═╡ 485f245c-f7ba-4ccb-86f7-08de5e9fd7e9
 dorfmanstr(n,m) = string(
-	"Dorfman w/ pools of size $(convert(Int,n//m))",
+	"Dorfman with pools of size $(convert(Int,n//m))",
 	"\n[i.e., ", hyperstr(n,m,1), "]"
 )
 
+# ╔═╡ 48b55bad-a658-4b22-9927-83e15bf900d1
+begin
+	mm_to_units(mm) = floor(Int,mm/25.4*72/0.75)
+	mm_to_units(mm1,mm2,mmrest...) = mm_to_units.((mm1,mm2,mmrest...))
+end
+
+# ╔═╡ 125cf732-35fd-48f9-a2f1-6261d92969fa
+THEME = Theme(;
+	font = "Arial", fontsize = 7,
+	linewidth = 1, markersize = 4,
+	Axis    = (;xticksize = 2.5, yticksize = 2.5),
+	Text    = (;textsize = 7),
+	BarPlot = (;label_size = 7, label_offset = 1, strokewidth = 0.5, gap = 0),
+	Hist    = (;strokewidth = 0),
+	BoxPlot = (;markersize = 3, whiskerwidth = 0.5),
+	Legend  = (;framevisible = false, titlefont = "Arial Bold", patchsize = (8,8)),
+	Lines   = (;linewidth = 2),
+	Scatter = (;markersize = 2),
+	Arrows  = (;linewidth = 1.5, arrowsize = 8),
+)
+
 # ╔═╡ 27882286-ba06-4d0c-9876-ab8afe757d33
-with_theme(; linewidth=3, markersize=3,
-	Axis=(;xtickalign=1, ytickalign=1, xticklabelsize=12f0, yticklabelsize=12f0),
-	Text=(;textsize=14f0), Legend=(;labelsize=14f0, framevisible=false)
-) do
-	fig = Figure(; resolution=(1200,1000))
+with_theme(THEME; Legend=(;padding=(0,0,0,0))) do
+	fig = Figure(; resolution=mm_to_units(180,150))
 
 	# Plot styles
 	dcolors = distinguishable_colors(7, [RGB(1,1,1)], dropseed=true)
@@ -186,21 +204,21 @@ with_theme(; linewidth=3, markersize=3,
 	ax.xticks = 10:20:190
 	ax.yticks = 0:0.005:0.02
 	ax.ytickformat = y->string.(100*y,'%')
-	ax.xlabel = "day"
-	ax.ylabel = "prevalence"
-	Label(fig[1,1,TopLeft()], "a"; textsize=28f0, halign=:left)
+	ax.xlabel = "Day"
+	ax.ylabel = "Prevalence"
+	Label(fig[1,1,TopLeft()], "a"; halign=:left, valign=:top, font="Arial Bold")
 	
 	# Fig b
-	ax = Axis(fig[1,2]; xlabel="log10(viral load)",
-		limits=(extrema(HISTBINS),nothing), xticks=-2:2:24)
+	ax = Axis(fig[1,2]; xlabel="log10(viral load)", xticks=-2:2:24,
+		limits=(extrema(HISTBINS),nothing))
 	for (day,color) in zip(HISTDAYS, Makie.wong_colors(0.5))
 		hist!(ax, log10.(posviralloads[day]); bins=HISTBINS, color,
 			label="Day $day: prevalence of $(round(100*prevalence[day],digits=1))%")
 	end
-	axislegend(ax)
+	axislegend(ax; position=:rt)
 	hideydecorations!(ax)
 	hidespines!(ax, :l, :t, :r)
-	Label(fig[1,2,TopLeft()], "b"; textsize=28f0, halign=:left)
+	Label(fig[1,2,TopLeft()], "b"; halign=:left, valign=:top, font="Arial Bold")
 	
 	# Fig c
 	fig[2,1] = GridLayout()
@@ -222,11 +240,11 @@ with_theme(; linewidth=3, markersize=3,
 	text!(ax_eff, dorfmanstr(96,8); color=dorfmanstyle.color,
 		position=(134,7.5), offset=(0,0), align=(:right,:bottom))
 	text!(ax_eff, "8x12 array"; color=arraystyle.color,
-		position=(10,96/20), offset=(8,-4), align=(:left,:top))
+		position=(10,96/20), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, hyperstr(96,16,2); color=hyperstyle(96,16,2).color,
-		position=(10,96/16), offset=(8,4))
+		position=(10,96/16), offset=(4,2))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(10,1), offset=(8,4))
+		position=(10,1), offset=(4,2))
 
 	# Fig d
 	fig[2,2] = GridLayout()
@@ -250,13 +268,13 @@ with_theme(; linewidth=3, markersize=3,
 	text!(ax_eff, dorfmanstr(384,16); color=dorfmanstyle.color,
 		position=(100,5.5), offset=(0,0), align=(:left,:top))
 	text!(ax_eff, "16x24 array"; color=arraystyle.color,
-		position=(10,384/40), offset=(8,4))
+		position=(10,384/40), offset=(4,2))
 	text!(ax_eff, hyperstr(384,32,2); color=hyperstyle(384,32,2).color,
-		position=(10,384/32), offset=(8,4))
+		position=(10,384/32), offset=(4,2))
 	text!(ax_eff, "P-BEST"; color=pbeststyle.color,
-		position=(10,384/48), offset=(8,-4), align=(:left,:top))
+		position=(10,384/48), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(10,1), offset=(8,4))
+		position=(10,1), offset=(4,2))
 
 	# Fig e
 	fig[3,1] = GridLayout()
@@ -276,13 +294,13 @@ with_theme(; linewidth=3, markersize=3,
 	scatter!(ax_sens, indivsens;                   indivstyle...)
 	
 	text!(ax_eff, hyperstr(384,32,2); color=hyperstyle(384,32,2).color,
-		position=(10,384/32), offset=(8,-4), align=(:left,:top))
+		position=(10,384/32), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, hyperstr(384,16,2); color=hyperstyle(384,16,2).color,
-		position=(10,384/16), offset=(8,-20), align=(:left,:top))
+		position=(10,384/16), offset=(4,-6), align=(:left,:top))
 	text!(ax_eff, hyperstr(384,12,2); color=hyperstyle(384,12,2).color,
 		position=(55,28), offset=(0,0))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(10,1), offset=(8,4))
+		position=(10,1), offset=(4,2))
 	
 	# Fig f
 	fig[3,2] = GridLayout()
@@ -304,16 +322,16 @@ with_theme(; linewidth=3, markersize=3,
 	text!(ax_eff, hyperstr(384,12,3); color=hyperstyle(384,12,3).color,
 		position=(60,28), offset=(0,0))
 	text!(ax_eff, hyperstr(384,12,2); color=hyperstyle(384,12,2).color,
-		position=(10,384/12), offset=(8,-4), align=(:left,:top), rotation=-0.25)
+		position=(10,384/12), offset=(4,-4), align=(:left,:top), rotation=-0.13)
 	text!(ax_eff, hyperstr(384,12,1); color=hyperstyle(384,12,1).color,
-		position=(10,24), offset=(8,-52), align=(:left,:top))
+		position=(10,24), offset=(4,-18), align=(:left,:top))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(10,1), offset=(8,4))
+		position=(10,1), offset=(4,2))
 
 	# Common axis limits, ticks, etc.
 	for (gl,sub) in zip(contents(fig[2:end,:]),'c':'z')
 		ax_eff, ax_sens = contents(gl)
-		rowgap!(gl, 16)
+		rowgap!(gl, 8)
 
 		# x-axis
 		xlims!(ax_eff, extrema(DAYS))
@@ -322,21 +340,25 @@ with_theme(; linewidth=3, markersize=3,
 		ax_eff.xticks = ax_sens.xticks = 10:20:190
 		daystr = day -> "$day\n($(round(100*prevalence[day];digits=2))%)"
 		ax_sens.xtickformat = x->daystr.(convert.(Int,x))
-		ax_sens.xlabel = "day (prevalence)"
+		ax_sens.xlabel = "Day (Prevalence)"
 
 		# y-axis
 		ylims!(ax_sens, (0.37,0.98))
 		ax_sens.yticks = 0.4:0.1:0.9
 		ax_sens.ytickformat = y->string.(convert.(Int,100*y),'%')
-		ax_eff.ylabel = "individuals/test"
-		ax_sens.ylabel = "sensitivity"
+		ax_eff.ylabel = "Efficiency\n(relative to indiv. testing)"
+		ax_sens.ylabel = "Sensitivity"
 
 		# label
-		Label(gl[1,1,TopLeft()], string(sub); textsize=28f0, halign=:left)
+		Label(gl[1,1,TopLeft()], string(sub);
+			halign=:left, valign=:top, font="Arial Bold")
 	end
 
+	rowgap!(fig.layout, 16)
+	colgap!(fig.layout, 16)
 	rowsize!(fig.layout, 1, Relative(1/7))
-	save("fig-s9.png", fig)
+	save("fig-s9.png", fig; px_per_unit=2)
+	save("fig-s9.pdf", fig)
 	fig
 end
 
@@ -348,7 +370,7 @@ end
 # ╟─6b39ad12-5378-47dc-9a12-e1d5838b0dee
 # ╟─fd643c2c-08e5-11eb-0d25-014798a505d1
 # ╟─fe7cf842-08e5-11eb-0d07-41ed2902921a
-# ╠═3f1b753e-0901-11eb-0060-1f1269588bef
+# ╟─3f1b753e-0901-11eb-0060-1f1269588bef
 # ╟─3f1c5288-0901-11eb-391f-dd7dd02d3d9b
 # ╟─05c6923e-08e6-11eb-1d9b-21afc86a6b04
 # ╟─cf1b2b1a-0c3b-11eb-2159-6ffeb682d595
@@ -373,4 +395,6 @@ end
 # ╟─c8c90422-4f35-4e90-90b8-4b30f3738f44
 # ╟─640b0974-da62-4cf7-963b-121a5030af16
 # ╟─485f245c-f7ba-4ccb-86f7-08de5e9fd7e9
+# ╟─48b55bad-a658-4b22-9927-83e15bf900d1
+# ╟─125cf732-35fd-48f9-a2f1-6261d92969fa
 # ╟─27882286-ba06-4d0c-9876-ab8afe757d33

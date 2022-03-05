@@ -160,24 +160,43 @@ doublepoolstr(n,m,q) = q == 2 ? "Double-pooling (m=$m)" : throw("q == $q != 2")
 function balsqarraystr(n,m,q)
 	q == 2 || throw("q = $q != 2")
 	iseven(m) || throw("m = $m is not even")
-	return "Bal. sq. array (m=$m, q=$q)\n\
-		[i.e., $(m÷2)x$(m÷2) array with $((m÷2)^2-n) holes]"
+	platearraystr = Dict((96,20,2)=>"8x12",(384,40,2)=>"16x24")[(n,m,q)]
+	return "$(m÷2)x$(m÷2) array with $((m÷2)^2-n) holes\n\
+		(balanced variant of $platearraystr array)"
 end
 
 # ╔═╡ 640b0974-da62-4cf7-963b-121a5030af16
 hyperstr(n,m,q) = "HYPER (m=$m, q=$q)"
 
+# ╔═╡ fbab58ba-b9bf-4f82-bdd9-7b5a2a4ef5c2
+begin
+	mm_to_units(mm) = floor(Int,mm/25.4*72/0.75)
+	mm_to_units(mm1,mm2,mmrest...) = mm_to_units.((mm1,mm2,mmrest...))
+end
+
+# ╔═╡ 2dff4440-1131-4e39-b55b-3dc0d46967e8
+THEME = Theme(;
+	font = "Arial", fontsize = 7,
+	linewidth = 1, markersize = 4,
+	Axis    = (;xticksize = 2.5, yticksize = 2.5),
+	Text    = (;textsize = 7),
+	BarPlot = (;label_size = 7, label_offset = 1, strokewidth = 0.5, gap = 0),
+	Hist    = (;strokewidth = 0),
+	BoxPlot = (;markersize = 3, whiskerwidth = 0.5),
+	Legend  = (;framevisible = false, titlefont = "Arial Bold", patchsize = (8,8)),
+	Lines   = (;linewidth = 2),
+	Scatter = (;markersize = 2),
+	Arrows  = (;linewidth = 1.5, arrowsize = 8),
+)
+
 # ╔═╡ 27882286-ba06-4d0c-9876-ab8afe757d33
-with_theme(; linewidth=3, markersize=3,
-	Axis=(;xtickalign=1, ytickalign=1, xticklabelsize=12f0, yticklabelsize=12f0),
-	Text=(;textsize=14f0),
-) do
-	fig = Figure(; resolution=(1200,500))
+with_theme(THEME) do
+	fig = Figure(; resolution=mm_to_units(180,75))
 
 	# Plot styles
 	dcolors = distinguishable_colors(7, [RGB(1,1,1)], dropseed=true)
 	indivstyle = (;color=dcolors[1], linestyle=:dot)
-	randassignstyle = (;color=dcolors[2], linewidth=6)
+	randassignstyle = (;color=dcolors[2], linewidth=3)
 	doublepoolstyle = (;color=dcolors[6])
 	balsqarraystyle = (;color=dcolors[3])
 	hyperstyle = (n,m,q) -> (;
@@ -205,15 +224,15 @@ with_theme(; linewidth=3, markersize=3,
 	plotsens!(ax_sens, indivsens;                       indivstyle...)
 
 	text!(ax_eff, randassignstr(96,16,2); color=randassignstyle.color,
-		position=(20,96/16), offset=(8,4))
+		position=(20,96/16), offset=(4,2))
 	text!(ax_eff, doublepoolstr(96,16,2); color=doublepoolstyle.color,
-		position=(20,96/16), offset=(8,-4), align=(:left,:top))
+		position=(20,96/16), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, balsqarraystr(96,20,2); color=balsqarraystyle.color,
-		position=(20,96/20), offset=(8,-4), align=(:left,:top))
+		position=(20,96/20), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, hyperstr(96,16,2); color=hyperstyle(96,16,2).color,
-		position=(83.0,5.1), offset=(8,4))
+		position=(83.0,5.1), offset=(4,2))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(20,1), offset=(8,4))
+		position=(20,1), offset=(4,2))
 
 	# Fig b
 	fig[1,2] = GridLayout()
@@ -235,20 +254,20 @@ with_theme(; linewidth=3, markersize=3,
 	plotsens!(ax_sens, indivsens;                        indivstyle...)
 
 	text!(ax_eff, randassignstr(384,32,2); color=randassignstyle.color,
-		position=(20,384/32), offset=(8,4))
+		position=(20,384/32), offset=(4,2))
 	text!(ax_eff, doublepoolstr(384,32,2); color=doublepoolstyle.color,
-		position=(20,384/32), offset=(8,-4), align=(:left,:top))
+		position=(20,384/32), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, balsqarraystr(384,40,2); color=balsqarraystyle.color,
-		position=(20,384/40), offset=(8,-4), align=(:left,:top))
+		position=(20,384/40), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, hyperstr(384,32,2); color=hyperstyle(384,32,2).color,
-		position=(72.5,10.2), offset=(8,4))
+		position=(72.5,10.2), offset=(4,2))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(20,1), offset=(8,4))
+		position=(20,1), offset=(4,2))
 
 	# Common axis limits, ticks, etc.
 	for (gl,sub) in zip(contents(fig.layout),'a':'z')
 		ax_eff, ax_sens = contents(gl)
-		rowgap!(gl, 16)
+		rowgap!(gl, 8)
 
 		# x-axis
 		xlims!(ax_eff, extrema(DAYS))
@@ -257,20 +276,23 @@ with_theme(; linewidth=3, markersize=3,
 		ax_eff.xticks = ax_sens.xticks = 30:10:100
 		daystr = day -> "$day\n($(round(100*prevalence[day];digits=2))%)"
 		ax_sens.xtickformat = x->daystr.(convert.(Int,x))
-		ax_sens.xlabel = "day (prevalence)"
+		ax_sens.xlabel = "Day (Prevalence)"
 
 		# y-axis
 		ylims!(ax_sens, (0.6,0.9))
 		ax_sens.yticks = 0.65:0.05:0.85
 		ax_sens.ytickformat = y->string.(convert.(Int,100*y),'%')
-		ax_eff.ylabel = "individuals/test"
-		ax_sens.ylabel = "sensitivity"
+		ax_eff.ylabel = "Efficiency\n(relative to individual testing)"
+		ax_sens.ylabel = "Sensitivity"
 
 		# label
-		Label(gl[1,1,TopLeft()], string(sub); textsize=28f0, halign=:left)
+		Label(gl[1,1,TopLeft()], string(sub);
+			halign=:left, valign=:top, font="Arial Bold")
 	end
 
-	save("fig-s5.png", fig)
+	colgap!(fig.layout, 16)
+	save("fig-s5.png", fig; px_per_unit=2)
+	save("fig-s5.pdf", fig)
 	fig
 end
 
@@ -312,4 +334,6 @@ end
 # ╟─4e5c92e8-059a-483b-97eb-038016cb39c9
 # ╟─1b91e41f-e346-4ea5-a6ef-f49d51634d31
 # ╟─640b0974-da62-4cf7-963b-121a5030af16
+# ╟─fbab58ba-b9bf-4f82-bdd9-7b5a2a4ef5c2
+# ╟─2dff4440-1131-4e39-b55b-3dc0d46967e8
 # ╟─27882286-ba06-4d0c-9876-ab8afe757d33

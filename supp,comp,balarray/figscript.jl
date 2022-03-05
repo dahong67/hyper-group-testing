@@ -132,14 +132,32 @@ SHADECOLOR = (:gray87, 0.25)
 hyperstr(n,m,q) = "HYPER (m=$m, q=$q)"
 
 # ╔═╡ fdac5fcd-83f7-440b-af81-ac8658911048
-balarraystr(n,m,q) = "Bal. array (m=$m, q=$q)"
+balarraystr(n,m,q) = "Balanced array (m=$m, q=$q)"
+
+# ╔═╡ 8939b5c4-cdf7-456e-b213-072d9e16b9b7
+begin
+	mm_to_units(mm) = floor(Int,mm/25.4*72/0.75)
+	mm_to_units(mm1,mm2,mmrest...) = mm_to_units.((mm1,mm2,mmrest...))
+end
+
+# ╔═╡ 414b2041-d6ff-4c69-9083-d4cc4bb3373b
+THEME = Theme(;
+	font = "Arial", fontsize = 7,
+	linewidth = 1, markersize = 4,
+	Axis    = (;xticksize = 2.5, yticksize = 2.5),
+	Text    = (;textsize = 7),
+	BarPlot = (;label_size = 7, label_offset = 1, strokewidth = 0.5, gap = 0),
+	Hist    = (;strokewidth = 0),
+	BoxPlot = (;markersize = 3, whiskerwidth = 0.5),
+	Legend  = (;framevisible = false, titlefont = "Arial Bold", patchsize = (8,8)),
+	Lines   = (;linewidth = 2),
+	Scatter = (;markersize = 2),
+	Arrows  = (;linewidth = 1.5, arrowsize = 8),
+)
 
 # ╔═╡ 27882286-ba06-4d0c-9876-ab8afe757d33
-with_theme(; linewidth=3, markersize=3,
-	Axis=(;xtickalign=1, ytickalign=1, xticklabelsize=12f0, yticklabelsize=12f0),
-	Text=(;textsize=14f0),
-) do
-	fig = Figure(; resolution=(1200,500))
+with_theme(THEME) do
+	fig = Figure(; resolution=mm_to_units(180,75))
 
 	# Plot styles
 	dcolors = distinguishable_colors(7, [RGB(1,1,1)], dropseed=true)
@@ -172,15 +190,15 @@ with_theme(; linewidth=3, markersize=3,
 	plotsens!(ax_sens, indivsens;                     indivstyle...)
 
 	text!(ax_eff, balarraystr(96,16,2); color=balarraystyle(96,16,2).color,
-		position=(20,96/16), offset=(8,-4), align=(:left,:top))
+		position=(20,96/16), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, balarraystr(96,8,2); color=balarraystyle(96,8,2).color,
-		position=(20,96/8), offset=(8,-12), align=(:left,:top))
+		position=(20,96/8), offset=(4,-4), align=(:left,:top))
 	text!(ax_eff, hyperstr(96,16,2); color=hyperstyle(96,16,2).color,
-		position=(20,96/16), offset=(8,4))
+		position=(20,96/16), offset=(4,2))
 	text!(ax_eff, hyperstr(96,8,2); color=hyperstyle(96,8,2).color,
-		position=(71.5,9.5), offset=(8,4))
+		position=(71.5,9.5), offset=(4,2))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(20,1), offset=(8,4))
+		position=(20,1), offset=(4,2))
 
 	# Fig b
 	fig[1,2] = GridLayout()
@@ -202,20 +220,20 @@ with_theme(; linewidth=3, markersize=3,
 	plotsens!(ax_sens, indivsens;                      indivstyle...)
 
 	text!(ax_eff, balarraystr(384,32,2); color=balarraystyle(384,32,2).color,
-		position=(20,384/32), offset=(8,-4), align=(:left,:top))
+		position=(20,384/32), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, balarraystr(384,8,2); color=balarraystyle(384,8,2).color,
-		position=(20,384/8), offset=(15,-15), align=(:left,:top), rotation=-0.35)
+		position=(20,384/8), offset=(8,-8), align=(:left,:top), rotation=-0.34)
 	text!(ax_eff, hyperstr(384,32,2); color=hyperstyle(384,32,2).color,
-		position=(20,384/32), offset=(8,4))
+		position=(20,384/32), offset=(4,2))
 	text!(ax_eff, hyperstr(384,8,2); color=hyperstyle(384,8,2).color,
-		position=(43.5,38.0), offset=(8,4))
+		position=(43.5,38.0), offset=(4,2))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(20,1), offset=(8,4))
+		position=(20,1), offset=(4,2))
 	
 	# Common axis limits, ticks, etc.
 	for (gl,sub) in zip(contents(fig.layout),'a':'z')
 		ax_eff, ax_sens = contents(gl)
-		rowgap!(gl, 16)
+		rowgap!(gl, 8)
 
 		# x-axis
 		xlims!(ax_eff, extrema(DAYS))
@@ -224,20 +242,23 @@ with_theme(; linewidth=3, markersize=3,
 		ax_eff.xticks = ax_sens.xticks = 30:10:100
 		daystr = day -> "$day\n($(round(100*prevalence[day];digits=2))%)"
 		ax_sens.xtickformat = x->daystr.(convert.(Int,x))
-		ax_sens.xlabel = "day (prevalence)"
+		ax_sens.xlabel = "Day (Prevalence)"
 
 		# y-axis
 		ylims!(ax_sens, (0.6,0.9))
 		ax_sens.yticks = 0.65:0.05:0.85
 		ax_sens.ytickformat = y->string.(convert.(Int,100*y),'%')
-		ax_eff.ylabel = "individuals/test"
-		ax_sens.ylabel = "sensitivity"
+		ax_eff.ylabel = "Efficiency\n(relative to individual testing)"
+		ax_sens.ylabel = "Sensitivity"
 
 		# label
-		Label(gl[1,1,TopLeft()], string(sub); textsize=28f0, halign=:left)
+		Label(gl[1,1,TopLeft()], string(sub);
+			halign=:left, valign=:top, font="Arial Bold")
 	end
 
-	save("fig-s6ab.png", fig)
+	colgap!(fig.layout, 16)
+	save("fig-s6ab.png", fig; px_per_unit=2)
+	save("fig-s6ab.pdf", fig)
 	fig
 end
 
@@ -271,4 +292,6 @@ end
 # ╟─c8c90422-4f35-4e90-90b8-4b30f3738f44
 # ╟─640b0974-da62-4cf7-963b-121a5030af16
 # ╟─fdac5fcd-83f7-440b-af81-ac8658911048
+# ╟─8939b5c4-cdf7-456e-b213-072d9e16b9b7
+# ╟─414b2041-d6ff-4c69-9083-d4cc4bb3373b
 # ╟─27882286-ba06-4d0c-9876-ab8afe757d33

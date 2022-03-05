@@ -128,12 +128,30 @@ SHADECOLOR = (:gray87, 0.25)
 # ╔═╡ 640b0974-da62-4cf7-963b-121a5030af16
 hyperstr(n,m,q) = "HYPER (m=$m, q=$q)"
 
+# ╔═╡ c5c6d835-03bb-4895-996a-d5f30b82b832
+begin
+	mm_to_units(mm) = floor(Int,mm/25.4*72/0.75)
+	mm_to_units(mm1,mm2,mmrest...) = mm_to_units.((mm1,mm2,mmrest...))
+end
+
+# ╔═╡ a776521e-68b8-438d-9da8-f34ab055d071
+THEME = Theme(;
+	font = "Arial", fontsize = 7,
+	linewidth = 1, markersize = 4,
+	Axis    = (;xticksize = 2.5, yticksize = 2.5),
+	Text    = (;textsize = 7),
+	BarPlot = (;label_size = 7, label_offset = 1, strokewidth = 0.5, gap = 0),
+	Hist    = (;strokewidth = 0),
+	BoxPlot = (;markersize = 3, whiskerwidth = 0.5),
+	Legend  = (;framevisible = false, titlefont = "Arial Bold", patchsize = (8,8)),
+	Lines   = (;linewidth = 2),
+	Scatter = (;markersize = 2),
+	Arrows  = (;linewidth = 1.5, arrowsize = 8),
+)
+
 # ╔═╡ 27882286-ba06-4d0c-9876-ab8afe757d33
-with_theme(; linewidth=3, markersize=3,
-	Axis=(;xtickalign=1, ytickalign=1, xticklabelsize=12f0, yticklabelsize=12f0),
-	Text=(;textsize=14f0),
-) do
-	fig = Figure(; resolution=(600,500))
+with_theme(THEME) do
+	fig = Figure(; resolution=mm_to_units(90,75))
 
 	# Plot styles
 	dcolors = distinguishable_colors(7, [RGB(1,1,1)], dropseed=true)
@@ -163,18 +181,18 @@ with_theme(; linewidth=3, markersize=3,
 	plotsens!(ax_sens, indivsens;                  indivstyle...)
 
 	text!(ax_eff, "P-BEST"; color=pbeststyle.color,
-		position=(20,384/48), offset=(8,-4), align=(:left,:top))
+		position=(20,384/48), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, hyperstr(384,16,2); color=hyperstyle(384,16,2).color,
-		position=(20,384/16), offset=(8,4))
+		position=(20,384/16), offset=(4,2))
 	text!(ax_eff, hyperstr(384,32,2); color=hyperstyle(384,32,2).color,
-		position=(20,384/32), offset=(8,4))
+		position=(20,384/32), offset=(4,2))
 	text!(ax_eff, hyperstr(384,48,2); color=hyperstyle(384,48,2).color,
-		position=(20,384/48), offset=(8,4))
+		position=(20,384/48), offset=(4,2))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(20,1), offset=(8,4))
+		position=(20,1), offset=(4,2))
 
 	# Axis limits, ticks, etc.
-	rowgap!(fig.layout, 16)
+	rowgap!(fig.layout, 8)
 
 	# x-axis
 	xlims!(ax_eff, extrema(DAYS))
@@ -183,16 +201,17 @@ with_theme(; linewidth=3, markersize=3,
 	ax_eff.xticks = ax_sens.xticks = 30:10:100
 	daystr = day -> "$day\n($(round(100*prevalence[day];digits=2))%)"
 	ax_sens.xtickformat = x->daystr.(convert.(Int,x))
-	ax_sens.xlabel = "day (prevalence)"
+	ax_sens.xlabel = "Day (Prevalence)"
 
 	# y-axis
 	ylims!(ax_sens, (0.6,0.9))
 	ax_sens.yticks = 0.65:0.05:0.85
 	ax_sens.ytickformat = y->string.(convert.(Int,100*y),'%')
-	ax_eff.ylabel = "individuals/test"
-	ax_sens.ylabel = "sensitivity"
+	ax_eff.ylabel = "Efficiency\n(relative to individual testing)"
+	ax_sens.ylabel = "Sensitivity"
 
-	save("fig-s4.png", fig)
+	save("fig-s4.png", fig; px_per_unit=2)
+	save("fig-s4.pdf", fig)
 	fig
 end
 
@@ -224,4 +243,6 @@ end
 # ╟─a6c3504c-543f-11eb-2f20-791273bc06b8
 # ╟─c8c90422-4f35-4e90-90b8-4b30f3738f44
 # ╟─640b0974-da62-4cf7-963b-121a5030af16
+# ╟─c5c6d835-03bb-4895-996a-d5f30b82b832
+# ╟─a776521e-68b8-438d-9da8-f34ab055d071
 # ╟─27882286-ba06-4d0c-9876-ab8afe757d33

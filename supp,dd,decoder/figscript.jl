@@ -16,7 +16,7 @@ end
 
 # ╔═╡ 849adbca-08e5-11eb-1956-cd02f2a6be7a
 md"""
-# Figure: simulation traces
+# Figure
 """
 
 # ╔═╡ 210d331a-09c3-11eb-06ed-e1f4ddc023fc
@@ -195,7 +195,7 @@ SHADELIMS = extrema(RESDAYS)
 SHADECOLOR = (:gray87, 0.25)
 
 # ╔═╡ 640b0974-da62-4cf7-963b-121a5030af16
-desstr(n,m,q) = "n=$n individual, m=$m pools, q=$q splits"
+desstr(n,m,q) = "n=$n individuals, m=$m pools, q=$q splits"
 
 # ╔═╡ 765191ba-fa31-4062-a1aa-bfcf85298791
 LEGEND = (;
@@ -230,12 +230,30 @@ else
 	"(days $d1-$d2: prevalence grows from $p1% to $p2%)"
 end
 
+# ╔═╡ 9275a78a-3a24-4feb-996f-ba2033965925
+begin
+	mm_to_units(mm) = floor(Int,mm/25.4*72/0.75)
+	mm_to_units(mm1,mm2,mmrest...) = mm_to_units.((mm1,mm2,mmrest...))
+end
+
+# ╔═╡ df4bea8f-3f28-4ed7-8f66-2d69928ec71f
+THEME = Theme(;
+	font = "Arial", fontsize = 7,
+	linewidth = 1, markersize = 4,
+	Axis    = (;xticksize = 2.5, yticksize = 2.5),
+	Text    = (;textsize = 7),
+	BarPlot = (;label_size = 7, label_offset = 1, strokewidth = 0.5, gap = 0),
+	Hist    = (;strokewidth = 0),
+	BoxPlot = (;markersize = 3, whiskerwidth = 0.5),
+	Legend  = (;framevisible = false, titlefont = "Arial Bold", patchsize = (8,8)),
+	Lines   = (;linewidth = 2),
+	Scatter = (;markersize = 2),
+	Arrows  = (;linewidth = 1.5, arrowsize = 8),
+)
+
 # ╔═╡ 27882286-ba06-4d0c-9876-ab8afe757d33
-with_theme(; linewidth=3, markersize=3,
-	Axis=(;xtickalign=1, ytickalign=1, xticklabelsize=12f0, yticklabelsize=12f0),
-	Text=(;textsize=14f0),
-) do
-	fig = Figure(; resolution=(1200,1200))
+with_theme(THEME) do
+	fig = Figure(; resolution=mm_to_units(180,180))
 
 	## Figs a-b
 	fig[1,1] = row1 = GridLayout(;alignmode=Outside())
@@ -265,13 +283,13 @@ with_theme(; linewidth=3, markersize=3,
 	plotsens!(ax_sens, indivsens;         indivstyle...)
 
 	text!(ax_eff, "HYPER"; color=hyperstyle.color,
-		position=(20,DES.n/DES.m), offset=(8,4))
+		position=(20,DES.n/DES.m), offset=(4,2))
 	text!(ax_eff, "HYPER-DD-Decode"; color=hyperdddstyle.color,
-		position=(80,DES.n/DES.m), offset=(8,4))
+		position=(80,DES.n/DES.m), offset=(4,2))
 	text!(ax_eff, "HYPER-DD-Skip"; color=hyperddsstyle.color,
-		position=(20,DES.n/DES.m), offset=(8,-4), align=(:left,:top))
+		position=(20,DES.n/DES.m), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(20,1), offset=(8,4))
+		position=(20,1), offset=(4,2))
 
 	# Fig b
 	DES = (;n=384,m=32,q=2)
@@ -292,18 +310,18 @@ with_theme(; linewidth=3, markersize=3,
 	plotsens!(ax_sens, indivsens;         indivstyle...)
 
 	text!(ax_eff, "HYPER"; color=hyperstyle.color,
-		position=(20,DES.n/DES.m), offset=(8,4))
+		position=(20,DES.n/DES.m), offset=(4,2))
 	text!(ax_eff, "HYPER-DD-Decode"; color=hyperdddstyle.color,
-		position=(80,DES.n/DES.m), offset=(8,4))
+		position=(80,DES.n/DES.m), offset=(4,2))
 	text!(ax_eff, "HYPER-DD-Skip"; color=hyperddsstyle.color,
-		position=(20,DES.n/DES.m), offset=(8,-4), align=(:left,:top))
+		position=(20,DES.n/DES.m), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(20,1), offset=(8,4))
+		position=(20,1), offset=(4,2))
 	
 	# Common axis limits, ticks, etc.
 	for (gl,sub) in zip(contents(row1),'a':'z')
 		ax_eff, ax_sens = contents(gl)
-		rowgap!(gl, 16)
+		rowgap!(gl, 8)
 
 		# x-axis
 		xlims!(ax_eff, extrema(DAYS))
@@ -312,17 +330,18 @@ with_theme(; linewidth=3, markersize=3,
 		ax_eff.xticks = ax_sens.xticks = 30:10:100
 		daystr = day -> "$day\n($(round(100*prevalence[day];digits=2))%)"
 		ax_sens.xtickformat = x->daystr.(convert.(Int,x))
-		ax_sens.xlabel = "day (prevalence)"
+		ax_sens.xlabel = "Day (Prevalence)"
 
 		# y-axis
 		ylims!(ax_sens, (0.5,0.9))
 		ax_sens.yticks = 0.55:0.05:0.85
 		ax_sens.ytickformat = y->string.(convert.(Int,round.(100*y;digits=10)),'%')
-		ax_eff.ylabel = "individuals/test"
-		ax_sens.ylabel = "sensitivity"
+		ax_eff.ylabel = "Efficiency\n(relative to indiv. testing)"
+		ax_sens.ylabel = "Sensitivity"
 
 		# label
-		Label(gl[1,1,TopLeft()], string(sub); textsize=28f0, halign=:left)
+		Label(gl[1,1,TopLeft()], string(sub);
+			halign=:left, valign=:top, font="Arial Bold")
 	end
 
 	## Fig c: resource analysis
@@ -360,21 +379,20 @@ with_theme(; linewidth=3, markersize=3,
 
 		# Find best method and mark corresponding effective capacity
 		maxbar = argmax(bar->bar.effcap, bars)
-		hlines!(ax, [maxbar.effcap]; color=maxbar.color, linewidth=2)
-		hlines!(ax, [maxbar.effcap]; color=:lightgray, linewidth=2, linestyle=:dash)
-		text!(ax, "$(round(maxbar.effcap;digits=1))"; textsize=14f0,
-			position=(mean(1:length(bars)),maxbar.effcap), align=(:center,:bottom))
+		hlines!(ax, [maxbar.effcap]; color=maxbar.color)
+		hlines!(ax, [maxbar.effcap]; color=:lightgray, linestyle=:dot)
+		text!(ax, "$(round(maxbar.effcap;digits=1))"; align=(:center,:bottom),
+			position=(mean(1:length(bars)),maxbar.effcap), offset=(0,1.5))
 
 		# Draw barplot
-		barplot!(ax, getindex.(bars,:effcap); color=getindex.(bars,:color),
-			strokecolor=:black, strokewidth=1, gap=0)
+		barplot!(ax, getindex.(bars,:effcap); color=getindex.(bars,:color))
 
 		# Add design annotations
 		for (idx,bar) in enumerate(bars)
 			iszero(bar.effcap) && continue
-			textsize = 11f0 * min(1,
+			textsize = 6 * min(1,
 				5/maximum(length.(split(bar.desstr,'\n')))*bar.effcap/maxbar.effcap)
-			textsize > 2f0 &&
+			textsize > 1 &&
 				text!(ax, bar.desstr; position=(idx,bar.effcap/2), rotation=pi/2,
 					align=(:center,:center), textsize, color=bar.desstrcolor)
 		end
@@ -386,26 +404,21 @@ with_theme(; linewidth=3, markersize=3,
 
 	# Add labels
 	for (swabidx,swabs) in enumerate(SWABS)
-		Label(fullfig[end,swabidx,Bottom()], "$swabs";
-			padding=(0,0,0,8), textsize=16f0)
+		Label(fullfig[end,swabidx,Bottom()], "$swabs"; padding=(0,0,0,4))
 	end
 	for (testidx,tests) in enumerate(TESTS)
-		Label(fullfig[end-testidx+1,1,Left()], "$tests";
-			padding=(0,8,0,0), textsize=16f0)
+		Label(fullfig[end-testidx+1,1,Left()], "$tests"; padding=(0,4,0,0))
 	end
 	Label(fullfig[0,:], "Effective screening capacity for all methods \
-		across the grid of resource constraints $DAYSTR"; textsize=16f0)
-	Label(fullfig[end+1,:], "Daily sample collection budget (average)";
-		textsize=16f0)
-	Label(fullfig[2:end-1,0], "Daily test budget (average)";
-		textsize=16f0, rotation=pi/2)
-	colgap!(fullfig, 1, 8)
-	rowgap!(fullfig, 1, 8)
-	rowgap!(fullfig, length(TESTS)+1, 8)
+		across the grid of resource constraints $DAYSTR")
+	Label(fullfig[end+1,:], "Daily sample collection budget (average)")
+	Label(fullfig[2:end-1,0], "Daily test budget (average)"; rotation=pi/2)
+	colgap!(fullfig, 1, 4)
+	rowgap!(fullfig, 1, 4)
+	rowgap!(fullfig, length(TESTS)+1, 4)
 
 	# Subfig label
-	Label(fullfig[1,1], "c";
-		textsize=28f0, halign=:left, valign=:top, padding=(0,0,0,0))
+	Label(fullfig[1,1], "c"; halign=:left, valign=:top, font="Arial Bold")
 
 	## Legend
 	LAYOUT = [:indiv; nothing; nothing;; :hyper1; :hyper2; :hyper3;;
@@ -413,17 +426,18 @@ with_theme(; linewidth=3, markersize=3,
 	LEG = [isnothing(m) ? (:white,0.0)=>"" : LEGEND[m][1]=>rstrip(LEGEND[m][2],'*')
 			for m in LAYOUT]
 	Legend(fig[3,1], [PolyElement(;color) for (color,_) in LEG], last.(vec(LEG)),
-		"Bars colored\nby method";
-		titlefont=assetpath("fonts", "NotoSans-Bold.ttf"),
-		orientation=:horizontal, nbanks=3, titleposition=:left,
-		tellheight=true, tellwidth=false, framevisible=false,
-		titlegap=36f0, colgap=24f0)
+		"Bars colored\nby method"; titleposition=:left, titlegap=18,
+		orientation=:horizontal, nbanks=size(LAYOUT,1), colgap=12,
+		tellwidth=false, tellheight=true)
 
 	## Layout
-	rowsize!(row1, 1, Fixed(300))
-	rowgap!(fig.layout, 2, 10)
+	rowsize!(row1, 1, Fixed(mm_to_units(45)))
+	rowgap!(fig.layout, 1, 16)
+	colgap!(row1, 16)
+	rowgap!(fig.layout, 2, 5)
 	
-	save("fig-s21.png", fig)
+	save("fig-s21.png", fig; px_per_unit=2)
+	save("fig-s21.pdf", fig)
 	fig
 end
 
@@ -468,4 +482,6 @@ end
 # ╟─765191ba-fa31-4062-a1aa-bfcf85298791
 # ╟─eb0744cf-bd7a-4fb0-91ba-0eef39dc014d
 # ╟─7e7d9de4-c3fc-439b-9b1b-4bab84f57947
+# ╟─9275a78a-3a24-4feb-996f-ba2033965925
+# ╟─df4bea8f-3f28-4ed7-8f66-2d69928ec71f
 # ╟─27882286-ba06-4d0c-9876-ab8afe757d33

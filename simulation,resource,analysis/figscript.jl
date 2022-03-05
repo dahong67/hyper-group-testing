@@ -159,7 +159,7 @@ md"""
 # ╔═╡ 4308103a-bf41-48f3-bdcb-d2bcf9cf9984
 LEGEND = (;
 	indiv  = ColorSchemes.OrRd_4[1] => "Individual testing",
-	array  = colorant"dodgerblue"   => "Array design*",
+	array  = colorant"dodgerblue"   => "Plate-based arrays*",
 	pbest  = colorant"forestgreen"  => "P-BEST*",
 	hyper1 = ColorSchemes.OrRd_4[2] => "HYPER (q=1)",
 	hyper2 = ColorSchemes.OrRd_4[3] => "HYPER (q=2)",
@@ -188,23 +188,45 @@ else
 	"(days $d1-$d2: prevalence grows from $p1% to $p2%)"
 end
 
+# ╔═╡ 33bf3a78-d5b4-4a65-b318-24f337b33318
+begin
+	mm_to_units(mm) = floor(Int,mm/25.4*72/0.75)
+	mm_to_units(mm1,mm2,mmrest...) = mm_to_units.((mm1,mm2,mmrest...))
+end
+
+# ╔═╡ c7b49cea-51f8-4e6e-8080-342b1a31776e
+THEME = Theme(;
+	font = "Arial", fontsize = 7,
+	linewidth = 1, markersize = 4,
+	Axis    = (;xticksize = 2.5, yticksize = 2.5),
+	Text    = (;textsize = 7),
+	BarPlot = (;label_size = 7, label_offset = 1, strokewidth = 0.5, gap = 0),
+	Hist    = (;strokewidth = 0),
+	BoxPlot = (;markersize = 3, whiskerwidth = 0.5),
+	Legend  = (;framevisible = false, titlefont = "Arial Bold", patchsize = (8,8)),
+	Lines   = (;linewidth = 2),
+	Scatter = (;markersize = 2),
+	Arrows  = (;linewidth = 1.5, arrowsize = 8),
+)
+
 # ╔═╡ 524ec5bb-5b69-4031-9f44-275325771e08
 md"""
 ### Fig 3
 """
 
 # ╔═╡ 0ec0e3e1-44b9-4463-98a2-dddf5a3d7616
-with_theme() do
-	fig = Figure(;resolution=(1200,775))
+with_theme(THEME) do
+	fig = Figure(; resolution=mm_to_units(180,110))
 
 	## Selected cells
-	fig[1,1] = selfig = GridLayout()
+	fig[1,1] = selfig = GridLayout(;alignmode=Outside())
 	selidx = permutedims(collect(pairs(IndexCartesian(), SELECTED)))
 	for ((figidx, grididx), figlbl) in zip(selidx, 'a':'z')
 		# Compute bar values, labels, etc.
 		bars = map(collect(pairs(capsgrid[grididx]))) do (method,(effcap,bavg,des))
 			methodstr =
-				(;indiv="Indiv.",hyper="HYPER",array="Array",pbest="P-BEST")[method]
+				(;indiv="Individual\ntesting", hyper="HYPER",
+					array="Plate-based\narrays", pbest="P-BEST")[method]
 			desstr = (;
 				indiv = _   -> "",
 				hyper = des -> des.q == 1 ?
@@ -226,44 +248,44 @@ with_theme() do
 
 		# Prepare axis
 		ax = Axis(selfig[Tuple(figidx)...],
-			title = "$(SWABS[grididx[1]]) samples, $(TESTS[grididx[2]]) tests",
-			ylabel = "Effective\nscreening capacity",
+			title = "Resource constraints: \
+				$(SWABS[grididx[1]]) samples, $(TESTS[grididx[2]]) tests",
+			ylabel = "Effective screening capacity",
 			yticksvisible = false, yticklabelsvisible = false,
 			xticks = (axes(bars,1), getindex.(bars,:methodstr)),
 			xgridvisible = false, ygridvisible = false,
-			yautolimitmargin = (0.0f0,0.2f0),
+			yautolimitmargin = (0.0f0,0.15f0),
 		)
 		tightlimits!(ax, Left(), Right(), Bottom())
 
 		# Draw barplot
 		barplot!(ax, getindex.(bars,:effcap);
-			bar_labels=:y, label_formatter=y->iszero(y) ? "" : round(y;digits=1),
-			color=:dodgerblue, strokecolor=:black, strokewidth=1, gap=0,
-			label_size=14f0)
+			bar_labels=:y, label_formatter=y->iszero(y) ? "" : round(y;digits=1))
 
 		# Add design annotations
 		for (idx,bar) in enumerate(bars)
 			iszero(bar.effcap) && continue
-			text!(ax, bar.desstr; position=(idx,bar.effcap), align=(:center,:top),
-				offset=(0,-4), textsize=14f0, color=:white)
 			desstrlines = isempty(bar.desstr) ? 0 : 1 + count('\n', bar.desstr)
+			desstrlines < 10*bar.effcap/maximum(getindex.(bars,:effcap)) &&
+				text!(ax, bar.desstr; color=:white,
+					align=(:center,:top), position=(idx,bar.effcap), offset=(0,-4))
 			desstrlines+1 < 10*bar.effcap/maximum(getindex.(bars,:effcap)) &&
-				text!(ax, bar.bstr; position=(idx,0), align=(:center,:bottom),
-					offset=(0,2), textsize=12f0)
+				text!(ax, bar.bstr;
+					align=(:center,:bottom), position=(idx,0), offset=(0,2))
 		end
 
 		# Subfig label
 		Label(selfig[Tuple(figidx)...,TopLeft()], string(figlbl);
-			textsize=28f0, halign=:left, padding=(0,16,8,0))
+			halign=:left, valign=:top, font="Arial Bold")
 	end
 
 	## Grid of best methods
-	fig[1,2] = bestfig = GridLayout()
+	fig[1,2] = bestfig = GridLayout(;alignmode=Outside())
 	ax = Axis(bestfig[1,1];
 		title = "Best methods across the grid of resource constraints\n$DAYSTR",
-		xlabel = "Daily sample collection capacity (average)",
+		xlabel = "Daily sample collection budget (average)",
 		xticks = (axes(SWABS,1), string.(SWABS)),
-		ylabel = "Daily test capacity (average)",
+		ylabel = "Daily test budget (average)",
 		yticks = (axes(TESTS,1), string.(TESTS)),
 		xgridvisible = false, ygridvisible = false,
 		xticksvisible = false, yticksvisible = false,
@@ -294,47 +316,46 @@ with_theme() do
 	# Add cell annotations to testing-limited regime
 	testlimited = filter(idx->idx[1]>=idx[2],CartesianIndices(cells))
 	text!(ax, string.(round.(getindex.(cells[testlimited],:effcap); digits=1));
-		position=Point.(Tuple.(testlimited)), align=(:center,:bottom), offset=(0,5),
-		textsize=13f0)
+		position=identity(Point.(Tuple.(testlimited))) .+ tuple(Point(0,0.4)),
+		align=(:center,:top))
 	text!(ax, getindex.(cells[testlimited],:desstr);
-		position=Point.(Tuple.(testlimited)), align=(:center,:top), offset=(0,7),
-		textsize=12f0, color=:white)
+		position=identity(Point.(Tuple.(testlimited))) .- tuple(Point(0,1/6)),
+		align=(:center,:center), color=:white)
 
 	# Add arrows and annotation to testing-rich regime
 	ndiag = minimum(size(cells))
-	arrows!(ax, 1:ndiag-1, (1:ndiag-1) .+ 0.4, fill(0,ndiag), fill(0.8,ndiag);
-		linewidth=2, arrowsize=15)
-	text!(ax, "Testing-rich regime:\nindividual testing optimal";
-		position=((1+ndiag)/2-2,(1+ndiag)/2+2), align=(:center,:center),
-		textsize=24f0, rotation=pi/4)
+	arrows!(ax, 1:ndiag-1, (1:ndiag-1) .+ 0.4, fill(0,ndiag), fill(0.8,ndiag))
+	text!(ax, "Testing-rich regime: individual testing optimal"; rotation=pi/4,
+		position=((1+ndiag)/2-2,(1+ndiag)/2+2), align=(:center,:center))
 	
 	# Mark selected cells
 	poly!(ax,
 		vec([Rect(grididx[1]-0.5,grididx[2]-0.5,1,1) for grididx in SELECTED]);
-		color=(:white,0), strokecolor=:black, strokewidth=2.5)
+		color=(:white,0), strokecolor=:black, strokewidth=1)
 
 	# Subfig label
 	Label(bestfig[1,1,TopLeft()], string(('a':'z')[length(SELECTED)+1]);
-		textsize=28f0, halign=:left)
+		halign=:left, valign=:top, font="Arial Bold")
 
 	# Legend
 	Legend(bestfig[2,1],
 		[PolyElement(;color) for (color,_) in LEGEND], last.(collect(LEGEND)),
-		"Cells colored by best method/design";
-		titlefont=assetpath("fonts", "NotoSans-Bold.ttf"),
-		nbanks=3, tellheight=true, tellwidth=false, framevisible=false)
+		"Cells colored by best method/design"; nbanks=3,
+		tellwidth=false, tellheight=true)
 	Label(bestfig[3,1],
 		"*Do not appear because they were not optimal in any setting.";
 		tellwidth=false, tellheight=true)
 
 	## Layout sizes/gaps
-	colgap!(selfig, 16)
-	rowgap!(selfig, 0)
-	rowgap!(bestfig, 2, 4)
-	colsize!(fig.layout, 2, Fixed(500))
-	colgap!(fig.layout, 40)
+	colgap!(selfig, 10)
+	rowgap!(selfig, 8)
+	rowgap!(bestfig, 1, 4)
+	rowgap!(bestfig, 2, 0)
+	colsize!(bestfig, 1, Fixed(mm_to_units(75)))
+	colgap!(fig.layout, 12)
 
-	save("fig-3.png", fig)
+	save("fig-3.png", fig; px_per_unit=2)
+	save("fig-3.pdf", fig)
 	fig
 end
 
@@ -344,8 +365,8 @@ md"""
 """
 
 # ╔═╡ dc506998-bccf-469a-b232-76fb24eec5d4
-with_theme() do
-	fig = Figure(;resolution=(1200,1200))
+with_theme(THEME) do
+	fig = Figure(;resolution=mm_to_units(180,180))
 
 	## Grid of all methods
 	fig[1,1] = fullfig = GridLayout()
@@ -380,21 +401,20 @@ with_theme() do
 
 		# Find best method and mark corresponding effective capacity
 		maxbar = argmax(bar->bar.effcap, bars)
-		hlines!(ax, [maxbar.effcap]; color=maxbar.color, linewidth=2)
-		hlines!(ax, [maxbar.effcap]; color=:lightgray, linewidth=2, linestyle=:dash)
-		text!(ax, "$(round(maxbar.effcap;digits=1))"; textsize=14f0,
-			position=(mean(1:length(bars)),maxbar.effcap), align=(:center,:bottom))
+		hlines!(ax, [maxbar.effcap]; color=maxbar.color)
+		hlines!(ax, [maxbar.effcap]; color=:lightgray, linestyle=:dot)
+		text!(ax, "$(round(maxbar.effcap;digits=1))"; align=(:center,:bottom),
+			position=(mean(1:length(bars)),maxbar.effcap), offset=(0,1.5))
 		
 		# Draw barplot
-		barplot!(ax, getindex.(bars,:effcap); color=getindex.(bars,:color),
-			strokecolor=:black, strokewidth=1, gap=0)
+		barplot!(ax, getindex.(bars,:effcap); color=getindex.(bars,:color))
 
 		# Add design annotations
 		for (idx,bar) in enumerate(bars)
 			iszero(bar.effcap) && continue
-			textsize = 11f0 * min(1,
+			textsize = 6 * min(1,
 				8/maximum(length.(split(bar.desstr,'\n')))*bar.effcap/maxbar.effcap)
-			textsize > 2f0 &&
+			textsize > 1 &&
 				text!(ax, bar.desstr; position=(idx,bar.effcap/2), rotation=pi/2,
 					align=(:center,:center), textsize, color=bar.desstrcolor)
 		end
@@ -406,34 +426,29 @@ with_theme() do
 
 	# Add labels
 	for (swabidx,swabs) in enumerate(SWABS)
-		Label(fullfig[end,swabidx,Bottom()], "$swabs";
-			padding=(0,0,0,8), textsize=16f0)
+		Label(fullfig[end,swabidx,Bottom()], "$swabs"; padding=(0,0,0,4))
 	end
 	for (testidx,tests) in enumerate(TESTS)
-		Label(fullfig[end-testidx+1,1,Left()], "$tests";
-			padding=(0,8,0,0), textsize=16f0)
+		Label(fullfig[end-testidx+1,1,Left()], "$tests"; padding=(0,4,0,0))
 	end
 	Label(fullfig[0,:], "Effective screening capacity for all methods \
-		across the grid of resource constraints $DAYSTR"; textsize=16f0)
-	Label(fullfig[end+1,:], "Daily sample collection budget (average)";
-		textsize=16f0)
-	Label(fullfig[2:end-1,0], "Daily test budget (average)";
-		textsize=16f0, rotation=pi/2)
-	colgap!(fullfig, 1, 8)
-	rowgap!(fullfig, 1, 8)
-	rowgap!(fullfig, length(TESTS)+1, 8)
+		across the grid of resource constraints $DAYSTR")
+	Label(fullfig[end+1,:], "Daily sample collection budget (average)")
+	Label(fullfig[2:end-1,0], "Daily test budget (average)"; rotation=pi/2)
+	colgap!(fullfig, 1, 4)
+	rowgap!(fullfig, 1, 4)
+	rowgap!(fullfig, length(TESTS)+1, 4)
 
 	## Legend
 	LAYOUT = [:indiv, :hyper1, :hyper2, :hyper3, :array, :pbest]
 	LEG = [LEGEND[m][1]=>rstrip(LEGEND[m][2],'*') for m in LAYOUT]
 	Legend(fig[2,1], [PolyElement(;color) for (color,_) in LEG], last.(vec(LEG)),
-		"Bars colored\nby method";
-		titlefont=assetpath("fonts", "NotoSans-Bold.ttf"),
-		orientation=:horizontal, titleposition=:left,
-		tellheight=true, tellwidth=false, framevisible=false,
-		titlegap=36f0, colgap=24f0)
-	
-	save("fig-s10.png", fig)
+		"Bars colored by method"; titleposition=:left, titlegap=18,
+		orientation=:horizontal, colgap=12, tellwidth=false, tellheight=true)
+
+	rowgap!(fig.layout, 8)
+	save("fig-s10.png", fig; px_per_unit=2)
+	save("fig-s10.pdf", fig)
 	fig
 end
 
@@ -471,6 +486,8 @@ end
 # ╟─5b786730-e30e-4d6e-9229-d9087a08e5c3
 # ╟─6d6411bb-2910-4c1c-82eb-154093782d33
 # ╟─0c901f1d-7da4-4688-b9a6-f5ddaa85ffc7
+# ╟─33bf3a78-d5b4-4a65-b318-24f337b33318
+# ╟─c7b49cea-51f8-4e6e-8080-342b1a31776e
 # ╟─524ec5bb-5b69-4031-9f44-275325771e08
 # ╟─0ec0e3e1-44b9-4463-98a2-dddf5a3d7616
 # ╟─2f5dd219-de9b-4ba4-80a9-8535f5c0810f

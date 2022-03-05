@@ -162,13 +162,13 @@ md"""
 
 # ╔═╡ 635fde7b-3977-4161-8776-db116d6949ad
 METHODS = [
-	["Rand. assign.\n(draw $(i+1))" =>
+	["Random assignment\n(draw $(i+1))" =>
 		(;eff=randassign_eff[i],sens=randassign_sens[i]) for i in 0:2]...,
 	["Double-pooling\n(draw $(i+1))" =>
 		(;eff=doublepool_eff[i],sens=doublepool_sens[i]) for i in 0:2]...,
 	"Consecutive"                   => (;eff=cons_eff,sens=cons_sens),
 	"Lexicographic"                 => (;eff=lex_eff,sens=lex_sens),
-	"Balanced array"                => (;eff=balarray_eff,sens=balarray_sens),
+	"Balanced arrays"               => (;eff=balarray_eff,sens=balarray_sens),
 	"RS-KS code"                    => (;eff=rskscode_eff,sens=rskscode_sens),
 	"HYPER"                         => (;eff=hyper_eff,sens=hyper_sens),
 ]
@@ -176,24 +176,45 @@ METHODS = [
 # ╔═╡ b170270d-fd2e-40dc-a038-5e343523315d
 FIGIDX = vec(permutedims(CartesianIndices((2,6))))
 
+# ╔═╡ 62d35fcc-47d2-44b2-9084-6c030acf902e
+begin
+	mm_to_units(mm) = floor(Int,mm/25.4*72/0.75)
+	mm_to_units(mm1,mm2,mmrest...) = mm_to_units.((mm1,mm2,mmrest...))
+end
+
+# ╔═╡ bc933543-3ffe-4858-a06f-c110f65314c7
+THEME = Theme(;
+	font = "Arial", fontsize = 7,
+	linewidth = 1, markersize = 4,
+	Axis    = (;xticksize = 2.5, yticksize = 2.5),
+	Text    = (;textsize = 7),
+	BarPlot = (;label_size = 7, label_offset = 1, strokewidth = 0.5, gap = 0),
+	Hist    = (;strokewidth = 0),
+	BoxPlot = (;markersize = 3, whiskerwidth = 0.5),
+	Legend  = (;framevisible = false, titlefont = "Arial Bold", patchsize = (8,8)),
+	Lines   = (;linewidth = 2),
+	Scatter = (;markersize = 2),
+	Arrows  = (;linewidth = 1.5, arrowsize = 8),
+)
+
 # ╔═╡ c2d66877-4dc1-404b-9715-71f2b874e335
-with_theme() do
-	fig = Figure(; resolution=(1200,750))
+with_theme(THEME; Lines=(;linewidth=1)) do
+	fig = Figure(; resolution=mm_to_units(180,120))
 
 	for ((methodstr,(eff,sens)),figidx,figlbl) in zip(METHODS,FIGIDX,'a':'z')
 		fig[Tuple(figidx)...] = gl = GridLayout()
 		Label(gl[1,1,TopLeft()], string(figlbl);
-			textsize=28f0, valign=:top, padding=(0,25,0,0))
+			halign=:left, valign=:top, font="Arial Bold")
 
 		# Efficiency
 		ax_eff_ind, _ = lines(gl[1,1], eff)
 		ax_eff_box, _ = boxplot(gl[1,2], fill(1,length(eff)), eff;
-			whiskerwidth=0.5, axis=(;xautolimitmargin=(0.25f0,0.25f0)))
+			axis=(;xautolimitmargin=(0.25f0,0.25f0)))
 
 		# Sensitivity
 		ax_sens_ind, _ = lines(gl[2,1], sens)
 		ax_sens_box, _ = boxplot(gl[2,2], fill(1,length(sens)), sens;
-			whiskerwidth=0.5, axis=(;xautolimitmargin=(0.25f0,0.25f0)))
+			axis=(;xautolimitmargin=(0.25f0,0.25f0)))
 
 		# Title
 		Label(gl[1,:,Top()], methodstr; padding=(0,0,5,0))
@@ -215,13 +236,16 @@ with_theme() do
 		ax_sens_ind.ytickformat = y->string.(convert.(Int,100*y),'%')
 		linkxaxes!(ax_eff_ind, ax_sens_ind)
 		hidexdecorations!(ax_eff_ind; ticks=false, grid=false)
-		rowgap!(gl, 10)
-		ax_eff_ind.ylabel  = "indiv/test"
-		ax_sens_ind.ylabel = "sensitivity"
-		ax_sens_ind.xlabel = "location of the\npositive indiv."
+		rowgap!(gl, 5)
+		ax_eff_ind.ylabel  = "Efficiency\n(rel. to indiv. testing)"
+		ax_sens_ind.ylabel = "Sensitivity"
+		ax_sens_ind.xlabel = "Location of the\npositive individual"
 	end
+	colgap!(fig.layout, 12)
+	rowgap!(fig.layout, 12)
 
-	save("fig-s7.png", fig)
+	save("fig-s7.png", fig; px_per_unit=2)
+	save("fig-s7.pdf", fig)
 	fig
 end
 
@@ -293,6 +317,8 @@ end
 # ╟─0fd98c50-2203-11eb-0f58-d946dcf484b4
 # ╟─635fde7b-3977-4161-8776-db116d6949ad
 # ╟─b170270d-fd2e-40dc-a038-5e343523315d
+# ╟─62d35fcc-47d2-44b2-9084-6c030acf902e
+# ╟─bc933543-3ffe-4858-a06f-c110f65314c7
 # ╟─c2d66877-4dc1-404b-9715-71f2b874e335
 # ╟─c7c610b1-8524-4c17-94c7-3e51c797f971
 # ╟─32da154d-c5b8-475d-93cf-be2794fef8eb

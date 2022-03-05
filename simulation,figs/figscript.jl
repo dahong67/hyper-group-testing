@@ -151,12 +151,30 @@ dorfmanstr(n,m) = string(
 	"\n[i.e., ", hyperstr(n,m,1), "]"
 )
 
+# ╔═╡ 7b716431-a54a-476d-925b-59e0a7d95da7
+begin
+	mm_to_units(mm) = floor(Int,mm/25.4*72/0.75)
+	mm_to_units(mm1,mm2,mmrest...) = mm_to_units.((mm1,mm2,mmrest...))
+end
+
+# ╔═╡ ebd368d4-5acb-45b5-aaaa-c3ab07047f66
+THEME = Theme(;
+	font = "Arial", fontsize = 7,
+	linewidth = 1, markersize = 4,
+	Axis    = (;xticksize = 2.5, yticksize = 2.5),
+	Text    = (;textsize = 7),
+	BarPlot = (;label_size = 7, label_offset = 1, strokewidth = 0.5, gap = 0),
+	Hist    = (;strokewidth = 0),
+	BoxPlot = (;markersize = 3, whiskerwidth = 0.5),
+	Legend  = (;framevisible = false, titlefont = "Arial Bold", patchsize = (8,8)),
+	Lines   = (;linewidth = 2),
+	Scatter = (;markersize = 2),
+	Arrows  = (;linewidth = 1.5, arrowsize = 8),
+)
+
 # ╔═╡ 27882286-ba06-4d0c-9876-ab8afe757d33
-with_theme(; linewidth=3, markersize=3,
-	Axis=(;xtickalign=1, ytickalign=1, xticklabelsize=12f0, yticklabelsize=12f0),
-	Text=(;textsize=14f0),
-) do
-	fig = Figure(; resolution=(1200,1000))
+with_theme(THEME) do
+	fig = Figure(; resolution=mm_to_units(180,150))
 
 	# Plot styles
 	dcolors = distinguishable_colors(7, [RGB(1,1,1)], dropseed=true)
@@ -189,11 +207,11 @@ with_theme(; linewidth=3, markersize=3,
 	text!(ax_eff, dorfmanstr(96,8); color=dorfmanstyle.color,
 		position=(88,3.5), offset=(0,0), align=(:right,:top))
 	text!(ax_eff, "8x12 array"; color=arraystyle.color,
-		position=(20,96/20), offset=(8,4))
+		position=(20,96/20), offset=(4,2))
 	text!(ax_eff, hyperstr(96,16,2); color=hyperstyle(96,16,2).color,
-		position=(20,96/16), offset=(8,4))
+		position=(20,96/16), offset=(4,2))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(20,1), offset=(8,4))
+		position=(20,1), offset=(4,2))
 
 	# Fig b
 	fig[1,2] = GridLayout()
@@ -217,13 +235,13 @@ with_theme(; linewidth=3, markersize=3,
 	text!(ax_eff, dorfmanstr(384,16); color=dorfmanstyle.color,
 		position=(74,6.0), offset=(0,0), align=(:right,:top))
 	text!(ax_eff, "16x24 array"; color=arraystyle.color,
-		position=(20,384/40), offset=(8,4))
+		position=(20,384/40), offset=(4,2))
 	text!(ax_eff, hyperstr(384,32,2); color=hyperstyle(384,32,2).color,
-		position=(20,384/32), offset=(8,4))
+		position=(20,384/32), offset=(4,2))
 	text!(ax_eff, "P-BEST"; color=pbeststyle.color,
-		position=(20,384/48), offset=(8,-4), align=(:left,:top))
+		position=(20,384/48), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(20,1), offset=(8,4))
+		position=(20,1), offset=(4,2))
 
 	# Fig c
 	fig[2,1] = GridLayout()
@@ -243,13 +261,13 @@ with_theme(; linewidth=3, markersize=3,
 	plotsens!(ax_sens, indivsens;                   indivstyle...)
 	
 	text!(ax_eff, hyperstr(384,32,2); color=hyperstyle(384,32,2).color,
-		position=(20,384/32), offset=(8,-4), align=(:left,:top))
+		position=(20,384/32), offset=(4,-2), align=(:left,:top))
 	text!(ax_eff, hyperstr(384,16,2); color=hyperstyle(384,16,2).color,
-		position=(20,384/16), offset=(8,-12), align=(:left,:top))
+		position=(20,384/16), offset=(4,-4), align=(:left,:top))
 	text!(ax_eff, hyperstr(384,12,2); color=hyperstyle(384,12,2).color,
 		position=(52,28), offset=(0,0))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(20,1), offset=(8,4))
+		position=(20,1), offset=(4,2))
 	
 	# Fig d
 	fig[2,2] = GridLayout()
@@ -271,16 +289,16 @@ with_theme(; linewidth=3, markersize=3,
 	text!(ax_eff, hyperstr(384,12,3); color=hyperstyle(384,12,3).color,
 		position=(58,28), offset=(0,0))
 	text!(ax_eff, hyperstr(384,12,2); color=hyperstyle(384,12,2).color,
-		position=(20,384/12), offset=(8,-22), align=(:left,:top))
+		position=(20,384/12), offset=(4,-8), align=(:left,:top))
 	text!(ax_eff, hyperstr(384,12,1); color=hyperstyle(384,12,1).color,
-		position=(20,24), offset=(8,-42), align=(:left,:top))
+		position=(20,24), offset=(4,-14), align=(:left,:top))
 	text!(ax_eff, "Individual testing"; color=indivstyle.color,
-		position=(20,1), offset=(8,4))
+		position=(20,1), offset=(4,2))
 
 	# Common axis limits, ticks, etc.
 	for (gl,sub) in zip(contents(fig.layout),'a':'z')
 		ax_eff, ax_sens = contents(gl)
-		rowgap!(gl, 16)
+		rowgap!(gl, 8)
 
 		# x-axis
 		xlims!(ax_eff, extrema(DAYS))
@@ -289,20 +307,24 @@ with_theme(; linewidth=3, markersize=3,
 		ax_eff.xticks = ax_sens.xticks = 30:10:100
 		daystr = day -> "$day\n($(round(100*prevalence[day];digits=2))%)"
 		ax_sens.xtickformat = x->daystr.(convert.(Int,x))
-		ax_sens.xlabel = "day (prevalence)"
+		ax_sens.xlabel = "Day (Prevalence)"
 
 		# y-axis
 		ylims!(ax_sens, (0.6,0.9))
 		ax_sens.yticks = 0.65:0.05:0.85
 		ax_sens.ytickformat = y->string.(convert.(Int,100*y),'%')
-		ax_eff.ylabel = "individuals/test"
-		ax_sens.ylabel = "sensitivity"
+		ax_eff.ylabel = "Efficiency\n(relative to individual testing)"
+		ax_sens.ylabel = "Sensitivity"
 
 		# label
-		Label(gl[1,1,TopLeft()], string(sub); textsize=28f0, halign=:left)
+		Label(gl[1,1,TopLeft()], string(sub);
+			halign=:left, valign=:top, font="Arial Bold")
 	end
 
-	save("fig-2.png", fig)
+	rowgap!(fig.layout, 16)
+	colgap!(fig.layout, 16)
+	save("fig-2.png", fig; px_per_unit=2)
+	save("fig-2.pdf", fig)
 	fig
 end
 
@@ -354,6 +376,8 @@ md"""
 # ╟─c8c90422-4f35-4e90-90b8-4b30f3738f44
 # ╟─640b0974-da62-4cf7-963b-121a5030af16
 # ╟─485f245c-f7ba-4ccb-86f7-08de5e9fd7e9
+# ╟─7b716431-a54a-476d-925b-59e0a7d95da7
+# ╟─ebd368d4-5acb-45b5-aaaa-c3ab07047f66
 # ╟─27882286-ba06-4d0c-9876-ab8afe757d33
 # ╟─157b5eb0-5474-11eb-2bac-4daf68438917
 # ╠═0159c02a-5474-11eb-137e-8b07b5079fb7

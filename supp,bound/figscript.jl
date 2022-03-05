@@ -7,7 +7,7 @@ using InteractiveUtils
 # ╔═╡ 571c959e-1aee-11eb-0e1e-a1b4d8f7762d
 begin
 	import Pkg; Pkg.activate(@__DIR__)
-	using CairoMakie, Distributions, LaTeXStrings
+	using CairoMakie, Distributions
 end
 
 # ╔═╡ f7c7716c-3593-11eb-00c3-677a7dbc5fec
@@ -112,21 +112,40 @@ md"""
 ## Plot
 """
 
+# ╔═╡ 0e132e0b-48a4-4d5f-8216-3de2c2f1c969
+begin
+	mm_to_units(mm) = floor(Int,mm/25.4*72/0.75)
+	mm_to_units(mm1,mm2,mmrest...) = mm_to_units.((mm1,mm2,mmrest...))
+end
+
+# ╔═╡ cb5f9a6a-4a03-49ce-a689-04dd5b669888
+THEME = Theme(;
+	font = "Arial", fontsize = 7,
+	linewidth = 1, markersize = 4,
+	Axis    = (;xticksize = 2.5, yticksize = 2.5),
+	Text    = (;textsize = 7),
+	BarPlot = (;label_size = 7, label_offset = 1, strokewidth = 0.5, gap = 0),
+	Hist    = (;strokewidth = 0),
+	BoxPlot = (;markersize = 3, whiskerwidth = 0.5),
+	Legend  = (;framevisible = false, titlefont = "Arial Bold", patchsize = (8,8)),
+	Lines   = (;linewidth = 2),
+	Scatter = (;markersize = 2),
+	Arrows  = (;linewidth = 1.5, arrowsize = 8),
+)
+
 # ╔═╡ 44682866-b1ee-11eb-15dc-69a15ac82723
-with_theme(; linewidth=5, Legend=(;framevisible=false)) do
+with_theme(THEME) do
 	# Config
 	PRANGE = 0.001:0.001:0.2
 	PTICKS = 0.01:0.01:0.2
 	EFFTICKS = 0:0.2:1
-	LSIZE = 20f0 # size for LaTeXStrings
 
 	# Figure
-	fig = Figure(;resolution=(1200,600))
+	fig = Figure(; resolution=mm_to_units(180,90))
 	ax = Axis(fig[1,1]; limits=((0,maximum(PRANGE)), (0,1)),
-		xlabel=LaTeXString("Prevalence"), xlabelsize=LSIZE,
-		xticks=PTICKS, yticks=EFFTICKS,
+		xlabel="Prevalence", xticks=PTICKS, yticks=EFFTICKS,
 		xtickformat=x->string.(convert.(Int,round.(x.*100;digits=10)),'%'),
-		ylabel=L"tests/individual: $\mathbf{\mathrm{E}}T/n$", ylabelsize=LSIZE)
+		ylabel="Tests expended per individual (on average)")
 
 	# Problem 2
 	n = 6144
@@ -142,7 +161,8 @@ with_theme(; linewidth=5, Legend=(;framevisible=false)) do
 		any number of stages, any decoder, etc.")
 
 	axislegend(ax; position=:rb)
-	save("fig-s2.png", fig)
+	save("fig-s2.png", fig; px_per_unit=2)
+	save("fig-s2.pdf", fig)
 	fig
 end
 
@@ -164,4 +184,6 @@ end
 # ╠═5c9a1260-3595-11eb-0e60-3fe0c174ca5a
 # ╠═2e3ff118-b74b-11eb-2204-034129ec8abe
 # ╟─2383c37a-35a8-11eb-3f37-ed1672ed16dc
+# ╟─0e132e0b-48a4-4d5f-8216-3de2c2f1c969
+# ╟─cb5f9a6a-4a03-49ce-a689-04dd5b669888
 # ╟─44682866-b1ee-11eb-15dc-69a15ac82723
