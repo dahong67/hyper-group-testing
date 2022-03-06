@@ -22,22 +22,22 @@ md"""
 """
 
 # ╔═╡ b604d599-510b-43ed-8302-78f05f66fe1b
-struct SimCounts{T<:Integer}
-	numtests::T
-	falseneg::T
-	truepos::T
-	trueneg::T
-	falsepos::T
+SimCounts = @NamedTuple begin
+	numtests::Int
+	falseneg::Int
+	truepos::Int
+	trueneg::Int
+	falsepos::Int
 end
 
 # ╔═╡ 2d465f6e-5bbc-44fd-9c58-38e66d6501bc
-Base.:+(x::SimCounts,y::SimCounts) = SimCounts(
+Base.:+(x::SimCounts,y::SimCounts) = SimCounts((
 	x.numtests+y.numtests,
 	x.falseneg+y.falseneg,
 	x.truepos+y.truepos,
 	x.trueneg+y.trueneg,
 	x.falsepos+y.falsepos,
-)
+))
 
 # ╔═╡ f9d61ede-6e49-43b3-b973-4455fc6bdd97
 function sim(rng,p,n,m,q;α=0,β=1)
@@ -50,13 +50,13 @@ function sim(rng,p,n,m,q;α=0,β=1)
 	for i in findall(xput)
 		xhat[i] = x[i] ? rand(rng,Bernoulli(β)) : rand(rng,Bernoulli(α))
 	end
-	return SimCounts(
+	return SimCounts((
 		m + count(xput),
 		count(  x .& .!xhat),
 		count(  x .&   xhat),
 		count(.!x .& .!xhat),
 		count(.!x .&   xhat),
-	)
+	))
 end
 
 # ╔═╡ d94f7aae-50e6-4b3a-95db-2628b4b4d4db
