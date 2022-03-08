@@ -1,6 +1,20 @@
 # Group testing via hypergraph factorization applied to COVID-19
 
-This code accompanies our manuscript *Group testing via hypergraph factorization applied to COVID-19*.
+This code accompanies our manuscript *Group testing via hypergraph factorization applied to COVID-19*,
+which can be cited as follows:
+> David Hong, Rounak Dey, Xihong Lin, Brian Cleary, Edgar Dobriban.
+> "Group testing via hypergraph factorization applied to COVID-19", 2022.
+> https://doi.org/10.1101/2021.02.24.21252394
+
+In BibTeX form:
+```bibtex
+@misc{hdlcd2022hyper,
+  title  = "Group testing via hypergraph factorization applied to COVID-19", 
+  author = "David Hong and Rounak Dey and Xihong Lin and Brian Cleary and Edgar Dobriban",
+  year   = 2022,
+  url    = "https://doi.org/10.1101/2021.02.24.21252394",
+}
+```
 
 Preprint available at: https://doi.org/10.1101/2021.02.24.21252394
 
