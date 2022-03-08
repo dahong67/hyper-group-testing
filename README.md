@@ -1,6 +1,6 @@
 # Code to reproduce figures from "HYPER: Group testing via hypergraph factorization applied to COVID-19"
 
-Preprint available at: https://www.medrxiv.org/content/10.1101/2021.02.24.21252394v1
+Preprint available at: https://doi.org/10.1101/2021.02.24.21252394
 
 Online tool available at: http://hyper.covid19-analysis.org
 
