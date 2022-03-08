@@ -153,7 +153,8 @@ results = cache("simcache.bson") do
 	map(CONFIGS) do (α,β)
 		map(DESIGNS) do (n,m,q)
 			rng = StableRNG(0)
-			@withprogress map(enumerate(PRANGE)) do (idx,p)
+			label = "α=$α,β=$β | n=$n,m=$m,q=$q | "
+			@withprogress name=label map(enumerate(PRANGE)) do (idx,p)
 				@logprogress idx/length(PRANGE)
 				sum(sim(rng,p,n,m,q;α,β) for _ in 1:NRUNS)
 			end
