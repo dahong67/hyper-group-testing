@@ -14,7 +14,7 @@ This repo contains Python and Julia code for HYPER:
 
 See subdirectories for more information.
 
-*Note:* The Julia scripts are in fact `Pluto.jl` notebooks (https://github.com/fonsp/Pluto.jl).
+*Note:* The Julia scripts are in fact also `Pluto.jl` notebooks (https://github.com/fonsp/Pluto.jl).
 
 ## System requirements
 
@@ -26,17 +26,19 @@ All codes can be run on a standard computer and have been tested on a 2019 Macbo
 
 The simulations in `simulation/` can be run in parallel so benefit greatly from running on a cluster;
 PBS scripts are provided in the `simulation/` directory.
+Similarly for some of the supplementary simulations.
+See subdirectories for more information.
 
 ### Software Requirements
 
 The code has been run on:
-+ MacOS 11.2.1
++ MacOS 11.6.4
 + Red Hat Enterprise Linux Server release 7.8
 
 The Python code uses the Anaconda environment described here:
 https://github.com/cleary-lab/covid19-group-tests/blob/master/code/group_test_simulations/README.md
 
-The Julia code was run on Julia 1.5.2, which can be installed from here:
+The Julia code was run on Julia 1.7.1, which can be installed from here:
 https://julialang.org/downloads/
 
 The MATLAB code was run using the Python-Matlab connection (https://www.mathworks.com/help/matlab/matlab-engine-for-python.html)
@@ -47,7 +49,8 @@ with MATLAB R2019a.
 No further installation is required beyond the Anaconda (Python) environment,
 Julia and MATLAB (with the Python-Matlab connection).
 
-Some of the Julia code uses packages installed via its package manager (https://julialang.github.io/Pkg.jl/v1/).
+The Julia codes use packages installed via the Julia package manager (https://julialang.github.io/Pkg.jl/v1/)
+and specified by `JuliaProject.toml` and `JuliaManifest.toml` files.
 We give instructions where needed.
 These installations can typically complete within 5-10 minutes.
 

@@ -40,14 +40,16 @@ for the methods listed in `double_pooling.txt`.
 Julia code in this directory creates the accompanying figure.
 
 To make sure the needed Julia packages are installed, run (from this directory):
-
 ```bash
 julia --project=@. -E 'using Pkg; Pkg.instantiate(); Pkg.status()'
 ```
+This *instantiates* the Julia environment: https://julialang.github.io/Pkg.jl/v1/environments/#Using-someone-else's-project
 
-To generate the figure, run `figs.jl` (from the terminal):
+To generate the figures, run `figscript.jl`:
 ```bash
-julia --project=@. -E 'include("figs.jl")'
+julia figscript.jl
 ```
-This may take roughly 2 minutes on a laptop.
-The expected output figure is `fig.png`.
+This may take a couple minutes on a laptop.
+The expected output figures are:
++ `fig-s5.pdf`
++ `fig-s5.png`

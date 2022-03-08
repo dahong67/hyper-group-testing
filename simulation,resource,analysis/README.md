@@ -1,60 +1,44 @@
 # Resource analysis
 
-Python/Julia code in this directory uses the outputs in `../simulation/`
+Julia code in this directory uses the outputs in `../simulation/`
 to analyze the effectiveness of the various methods under resource constraints.
 
 To make sure the needed Julia packages are installed, run (from this directory):
-
 ```bash
 julia --project=@. -E 'using Pkg; Pkg.instantiate(); Pkg.status()'
 ```
+This *instantiates* the Julia environment: https://julialang.github.io/Pkg.jl/v1/environments/#Using-someone-else's-project
 
-## Steps to produce the output files
-
-1. Run `resource_analysis_hypergraph.py` to carry out the resource analyses used in the paper:
+To generate Fig. 3 and Supplementary Fig. 10, run `figscript.jl`:
 ```bash
-python -u resource_analysis_hypergraph.py --viral-load-matrix ../simulation/Simulated_populations/seir_viral_loads_swab.viral_loads.npz --resultspath ../simulation/designs/ --savepath . --start-time 40 --end-time 90 --n-swabs-list 12 24 48 96 192 384 768 1536 3072 6144 --m-kits-list 12 24 48 96 192 384 768 1536 3072 6144
-python -u resource_analysis_hypergraph.py --viral-load-matrix ../simulation/Simulated_populations/seir_viral_loads_swab.viral_loads.npz --resultspath ../simulation/designs/ --savepath . --start-time 53 --end-time 53 --n-swabs-list 12 24 48 96 192 384 768 1536 3072 6144 --m-kits-list 12 24 48 96 192 384 768 1536 3072 6144
-python -u resource_analysis_hypergraph.py --viral-load-matrix ../simulation/Simulated_populations/seir_viral_loads_swab.viral_loads.npz --resultspath ../simulation/designs/ --savepath . --start-time 80 --end-time 80 --n-swabs-list 12 24 48 96 192 384 768 1536 3072 6144 --m-kits-list 12 24 48 96 192 384 768 1536 3072 6144
-python -u resource_analysis_hypergraph.py --viral-load-matrix ../simulation/Simulated_populations/seir_viral_loads_swab.viral_loads.npz --resultspath ../simulation/designs/ --savepath . --start-time 83 --end-time 83 --n-swabs-list 12 24 48 96 192 384 768 1536 3072 6144 --m-kits-list 12 24 48 96 192 384 768 1536 3072 6144
-python -u resource_analysis_hypergraph.py --viral-load-matrix ../simulation/Simulated_populations/seir_viral_loads_swab.viral_loads.npz --resultspath ../simulation/designs/ --savepath . --start-time 84 --end-time 84 --n-swabs-list 12 24 48 96 192 384 768 1536 3072 6144 --m-kits-list 12 24 48 96 192 384 768 1536 3072 6144
-python -u resource_analysis_hypergraph.py --viral-load-matrix ../simulation/Simulated_populations/seir_viral_loads_swab.viral_loads.npz --resultspath ../simulation/designs/ --savepath . --start-time 90 --end-time 90 --n-swabs-list 12 24 48 96 192 384 768 1536 3072 6144 --m-kits-list 12 24 48 96 192 384 768 1536 3072 6144
-python -u resource_analysis_hypergraph.py --viral-load-matrix ../simulation/Simulated_populations/seir_viral_loads_swab.viral_loads.npz --resultspath ../simulation/designs/ --savepath . --start-time 93 --end-time 93 --n-swabs-list 12 24 48 96 192 384 768 1536 3072 6144 --m-kits-list 12 24 48 96 192 384 768 1536 3072 6144
+julia figscript.jl
 ```
-This produces the files `summary.resource_t0-40_t1-90.csv`, etc.
+This may take a few minutes on a laptop.
+The expected output figures are:
++ `fig-3.pdf`
++ `fig-3.png`
++ `fig-s10.pdf`
++ `fig-s10.png`
 
-2. Run `figs.jl` to generate the figures:
+To generate Supplementary Figs. 11-16, run `figscriptcomb.jl`:
 ```bash
-julia --project=@. -E 'include("figs.jl")'
+julia figscriptcomb.jl
 ```
-To generate the figures for different sets of days,
-un/comment lines in the following block of `figs.jl`:
+after un/commenting the corresponding line
+in the following block of `figscriptcomb.jl`:
+```julia
+# ╔═╡ b58f8921-cd4c-4740-b17e-fc669a999b84
+DAYS, SAVENAME = IdentityRange(53:53), "fig-s11"
+# DAYS, SAVENAME = IdentityRange(80:80), "fig-s12"
+# DAYS, SAVENAME = IdentityRange(83:83), "fig-s13"
+# DAYS, SAVENAME = IdentityRange(84:84), "fig-s14"
+# DAYS, SAVENAME = IdentityRange(90:90), "fig-s15"
+# DAYS, SAVENAME = IdentityRange(93:93), "fig-s16"
 ```
-# ╔═╡ e88985de-2f4e-11eb-32cf-1f7a851792bb
-# prevalence ≈ 0.033808% - 2.459128%
-t0, t1, q1pos, q2pos, q3pos, pbestpos = 40, 90, 8.5, 7, 4, missing
-
-# prevalence ≈ 0.103552%
-# t0, t1, q1pos, q2pos, q3pos, pbestpos = 53, 53, 8, 5.5, 3, missing
-
-# prevalence ≈ 1.055872%
-# t0, t1, q1pos, q2pos, q3pos, pbestpos = 80, 80, 8.5, 7, 4, missing
-
-# prevalence ≈ 1.362224%
-# t0, t1, q1pos, q2pos, q3pos, pbestpos = 83, 83, 8.5, 1, 4, missing
-
-# prevalence ≈ 1.484104%
-# t0, t1, q1pos, q2pos, q3pos, pbestpos = 84, 84, 8.5, 1.5, missing, 5
-
-# prevalence ≈ 2.459128%
-# t0, t1, q1pos, q2pos, q3pos, pbestpos = 90, 90, 9, 1.5, missing, 5
-
-# prevalence ≈ 3.149712%
-# t0, t1, q1pos, q2pos, q3pos, pbestpos = 93, 93, 9, 1.5, 5, missing
-```
-Each run may take roughly 2 minutes on a laptop.
-The expected output figures for days 40-90 (first set) are:
-+ `res,analysis,bestmethods,t0-40,t1-90.png`
-+ `res,analysis,detail,t0-40,t1-90.png`
-+ `res,analysis,selected,t0-40,t1-90.png`
-
+Each run may take a few minutes on a laptop.
+The expected output figures are:
++ `fig-s11.pdf`
++ `fig-s11.png`
++ ...
++ `fig-s16.pdf`
++ `fig-s16.png`

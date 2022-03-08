@@ -1,29 +1,33 @@
 # Analysis under the statistical model
 
-Julia code in this directory creates figures to accompany
-the analysis under a common statistical model.
+Julia code in this directory runs simulations and creates figures
+to accompany the analysis under the general statistical model.
 
 To make sure the needed Julia packages are installed, run (from this directory):
-
 ```bash
 julia --project=@. -E 'using Pkg; Pkg.instantiate(); Pkg.status()'
 ```
+This *instantiates* the Julia environment: https://julialang.github.io/Pkg.jl/v1/environments/#Using-someone-else's-project
 
-To generate the figures, run `figs.jl` (from the terminal):
+To generate the figures, run `figscript.jl`:
 ```bash
-julia --project=@. -E 'include("figs.jl")'
+julia figscript.jl
 ```
-To generate figs a-c vs d-f,
-un/comment lines in the following block of `figs.jl`:
+This may take a couple minutes on a laptop.
+The expected output figures are:
++ `fig-s1.pdf`
++ `fig-s1.png`
+
+The script uses a saved cache of the simulation results: `simcache.bson`.
+To regenerate these results simply delete this cache file and rerun:
+```bash
+rm simcache.bson
+julia figscript.jl
 ```
-# ╔═╡ 75a6fdb4-3aa0-11eb-38d5-f3c1c4ade957
-opchar, figlabels = (α=0.05,β=0.90), (eff="a",sens="b",spec="c")
-# opchar, figlabels = (α=0.05,β=0.80), (eff="d",sens="e",spec="f")
+or to have a progress bar, run `figscript.jl` with an appropriate logger:
+```bash
+julia --project=. -e 'using Logging, TerminalLoggers; with_logger(()->include("figscript.jl"),TerminalLogger());'
 ```
-Each run may take roughly 5 minutes on a laptop.
-The expected output figures for α=0.05,β=0.90 (first set)  are
-+ `fig-a.png`
-+ `fig-b.png`
-+ `fig-c.png`
-+ `fig-g.png`
-+ `fig-h.png`
+This may take roughly 6 minutes on a laptop.
+
+Note that `figscript.jl` uses [`StableRNGs.jl`](https://github.com/JuliaRandom/StableRNGs.jl) to make the simulation reproducible.

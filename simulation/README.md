@@ -27,3 +27,8 @@ Simulated_populations
 2. Run `design_sweep.pbs` cluster script.
 This runs the simulation in `covid19-group-tests/code/group_test_simulations/test_on_simulated_population.py` for the methods listed in `design_list.txt`.
 3. Follow instructions in `pbest/` to run the simulation for P-BEST (simulating for P-BEST required a modification of the code in `covid19-group-tests`).
+4. Run `individual_testing.py` to run the simulation for individual testing:
+```bash
+conda activate covid-group-tests
+python -u individual_testing.py --viral-load-matrix Simulated_populations/seir_viral_loads_swab.viral_loads.npz --savepath designs/individual --start-time 0 --end-time 356 | tee designs/individual/log.txt
+```

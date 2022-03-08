@@ -1,6 +1,6 @@
 # Simulation under a realistic COVID-19 model with a two-wave epidemic
 
-Python code in this directory repeats some of the simulations from `../simulation/`
+Code in this directory repeats some of the simulations from `../simulation/`
 with a two-wave epidemic.
 
 The `designs/` directory has the main output data files;
@@ -31,24 +31,34 @@ See the instructions in `../simulation/pbest/README.md` for how to setup (e.g., 
 conda activate covid-group-tests
 python -u ../simulation/pbest/combine_results.py --resultspath ./pbest,results --savepath ./designs/pbest/ --start-time 10 --end-time 200
 ```
+5. Run `individual_testing.py` to run the simulation for individual testing:
+```bash
+conda activate covid-group-tests
+python -u individual_testing.py --viral-load-matrix Simulated_populations_two_wave/seir_viral_loads_swab_switch_SEIR_new_1.viral_loads.npz --savepath designs/individual --start-time 0 --end-time 200 | tee designs/individual/log.txt
+```
+6. Run `posviralloads/extractscript.py` to extract the distribution of positive viral loads for days 82, 104 and 173:
+```bash
+conda activate covid-group-tests
+python -u extractscript.py --viral-load-matrix ../Simulated_populations_two_wave/seir_viral_loads_swab_switch_SEIR_new_1.viral_loads.npz --savepath . --at-time 82
+python -u extractscript.py --viral-load-matrix ../Simulated_populations_two_wave/seir_viral_loads_swab_switch_SEIR_new_1.viral_loads.npz --savepath . --at-time 104
+python -u extractscript.py --viral-load-matrix ../Simulated_populations_two_wave/seir_viral_loads_swab_switch_SEIR_new_1.viral_loads.npz --savepath . --at-time 173
+```
 
-## Steps to create figures
+## Steps to create the figure
 
-Julia code in this directory creates accompanying figures.
+Julia code in this directory creates the accompanying figure.
 
 To make sure the needed Julia packages are installed, run (from this directory):
-
 ```bash
 julia --project=@. -E 'using Pkg; Pkg.instantiate(); Pkg.status()'
 ```
+This *instantiates* the Julia environment: https://julialang.github.io/Pkg.jl/v1/environments/#Using-someone-else's-project
 
-To generate the figure, run `figs.jl` (from the terminal):
+To generate the figure, run `figscript.jl`:
 ```bash
-julia --project=@. -E 'include("figs.jl")'
+julia figscript.jl
 ```
-This may take roughly 1 minute on a laptop.
+This may take a couple minutes on a laptop.
 The expected output figures are:
-+ `fig-a,b.png`
-+ `fig-c.png`
-+ `fig-d,e.png`
-
++ `fig-s9.pdf`
++ `fig-s9.png`

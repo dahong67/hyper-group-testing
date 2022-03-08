@@ -13,6 +13,9 @@ For example, `designs/consecutive/` includes the following files:
 The `double,pooling.seed-*/` and `rand,assign.seed-*/` subdirectories
 don't contain `Design.*` files since those designs
 are randomly generated in the simulation code.
+Likewise the `hypergraph/`, `balarray/` and `rskscode,f2/` subdirectories
+don't contain `Design.*` files since those designs
+are available in `../simulation/designs/`, `../supp,comp,balarray/designs/` and `../supp,comp,rskscode/designs/`, respectively.
 
 ## Steps to reproduce the output files
 
@@ -41,18 +44,16 @@ for double-pooling with the settings listed in `rand_list.txt`.
 Julia code in this directory creates the accompanying figure.
 
 To make sure the needed Julia packages are installed, run (from this directory):
-
 ```bash
 julia --project=@. -E 'using Pkg; Pkg.instantiate(); Pkg.status()'
 ```
+This *instantiates* the Julia environment: https://julialang.github.io/Pkg.jl/v1/environments/#Using-someone-else's-project
 
-To generate the figure, run `figs.jl` (from the terminal):
+To generate the figure, run `figscript.jl`:
 ```bash
-julia --project=@. -E 'include("figs.jl")'
+julia figscript.jl
 ```
-This may take roughly 1.5 minutes on a laptop.
+This may take a couple minutes on a laptop.
 The expected output figures are:
-+ `fig-a.png`
-+ `fig-b.png`
-+ `fig-c.png`
-+ `fig-d.png`
++ `fig-s7.pdf`
++ `fig-s7.png`

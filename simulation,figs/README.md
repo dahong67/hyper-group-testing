@@ -4,16 +4,16 @@ Julia code in this directory uses the outputs in `../simulation/`
 to create figures of the simulation traces for the paper.
 
 To make sure the needed Julia packages are installed, run (from this directory):
-
 ```bash
 julia --project=@. -E 'using Pkg; Pkg.instantiate(); Pkg.status()'
 ```
+This *instantiates* the Julia environment: https://julialang.github.io/Pkg.jl/v1/environments/#Using-someone-else's-project
 
-To generate the figures, run `figs.jl` (from the terminal):
+To generate the figures, run `figscript.jl`:
 ```bash
-julia --project=@. -E 'include("figs.jl")'
+julia figscript.jl
 ```
-This may take roughly 2 minutes on a laptop.
+This may take a couple minutes on a laptop.
 The expected output figures are:
-+ `fig-a.png`
-+ `fig-b.png`
++ `fig-2.pdf`
++ `fig-2.png`
